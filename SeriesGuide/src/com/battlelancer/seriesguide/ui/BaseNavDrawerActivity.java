@@ -36,18 +36,11 @@ public abstract class BaseNavDrawerActivity extends BaseActivity {
     private MenuDrawer mMenuDrawer;
 
     @Override
-    protected void onCreate(Bundle arg0) {
+    protected void onCreate(Bundle savedInstanceState) {
         // set a theme based on user preference
         setTheme(SeriesGuidePreferences.THEME);
-        super.onCreate(arg0);
+        super.onCreate(savedInstanceState);
 
-        setupNavDrawer();
-    }
-
-    /**
-     * Attaches the {@link MenuDrawer}.
-     */
-    private void setupNavDrawer() {
         mMenuDrawer = getAttachedMenuDrawer();
 
         mMenuDrawer.setTouchMode(MenuDrawer.TOUCH_MODE_BEZEL);
@@ -67,13 +60,17 @@ public abstract class BaseNavDrawerActivity extends BaseActivity {
 
             @Override
             public void onDrawerSlide(float openRatio, int offsetPixels) {
+                // Nothing to do
             }
         });
 
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        Fragment f = new SlidingMenuFragment();
-        ft.add(R.id.menu_frame, f);
-        ft.commit();
+        // Don't recreate the MenuDrawer content on orientation changes
+        if (savedInstanceState == null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            Fragment f = new SlidingMenuFragment();
+            ft.add(R.id.menu_frame, f);
+            ft.commit();
+        }
     }
 
     /*
