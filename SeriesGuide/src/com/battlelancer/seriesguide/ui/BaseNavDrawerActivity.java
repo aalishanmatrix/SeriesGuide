@@ -17,6 +17,8 @@
 
 package com.battlelancer.seriesguide.ui;
 
+import static net.simonvt.menudrawer.MenuDrawer.STATE_CLOSED;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -56,7 +58,11 @@ public abstract class BaseNavDrawerActivity extends BaseActivity {
             @Override
             public void onDrawerStateChange(int oldState, int newState) {
                 // Helps hiding actions when the drawer is open
-                supportInvalidateOptionsMenu();
+                if (newState == STATE_CLOSED || (oldState == STATE_CLOSED
+                        && (newState == MenuDrawer.STATE_OPENING
+                        || newState == MenuDrawer.STATE_DRAGGING))) {
+                    supportInvalidateOptionsMenu();
+                }
             }
 
             @Override
