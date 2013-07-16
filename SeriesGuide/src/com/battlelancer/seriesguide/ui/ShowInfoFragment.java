@@ -96,20 +96,19 @@ public class ShowInfoFragment extends SherlockFragment implements LoaderCallback
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.showinfo_menu, menu);
-        menu.findItem(R.id.menu_share).setTitle(R.string.share_show);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        if (itemId == R.id.menu_rate_trakt) {
+        if (itemId == R.id.menu_show_rate) {
             onRateOnTrakt();
             return true;
-        } else if (itemId == R.id.menu_manage_lists) {
+        } else if (itemId == R.id.menu_show_manage_lists) {
             ListsDialogFragment.showListsDialog(String.valueOf(getShowTvdbId()),
                     ListItemTypes.SHOW, getFragmentManager());
             return true;
-        } else if (itemId == R.id.menu_share) {
+        } else if (itemId == R.id.menu_show_share) {
             onShareShow();
             return true;
         }

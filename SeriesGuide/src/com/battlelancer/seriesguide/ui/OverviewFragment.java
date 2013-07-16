@@ -192,7 +192,7 @@ public class OverviewFragment extends SherlockFragment implements
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.showinfo_menu, menu);
+        inflater.inflate(R.menu.overview_menu, menu);
 
         // enable/disable menu items
         boolean isEpisodeVisible;
@@ -201,23 +201,23 @@ public class OverviewFragment extends SherlockFragment implements
         } else {
             isEpisodeVisible = false;
         }
-        menu.findItem(R.id.menu_manage_lists).setEnabled(isEpisodeVisible);
-        menu.findItem(R.id.menu_share).setEnabled(isEpisodeVisible);
-        menu.findItem(R.id.menu_rate_trakt).setEnabled(isEpisodeVisible);
+        menu.findItem(R.id.menu_overview_manage_lists).setEnabled(isEpisodeVisible);
+        menu.findItem(R.id.menu_overview_share).setEnabled(isEpisodeVisible);
+        menu.findItem(R.id.menu_overview_rate).setEnabled(isEpisodeVisible);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        if (itemId == R.id.menu_rate_trakt) {
+        if (itemId == R.id.menu_overview_rate) {
             onRateOnTrakt();
             return true;
-        } else if (itemId == R.id.menu_share) {
+        } else if (itemId == R.id.menu_overview_share) {
             // share episode
             fireTrackerEvent("Share");
             onShareEpisode(ShareMethod.OTHER_SERVICES);
             return true;
-        } else if (itemId == R.id.menu_manage_lists) {
+        } else if (itemId == R.id.menu_overview_manage_lists) {
             fireTrackerEvent("Manage lists");
             if (mEpisodeCursor != null && mEpisodeCursor.moveToFirst()) {
                 ListsDialogFragment.showListsDialog(mEpisodeCursor.getString(EpisodeQuery._ID),
