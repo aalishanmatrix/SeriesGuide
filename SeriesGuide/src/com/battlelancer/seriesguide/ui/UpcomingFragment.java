@@ -140,9 +140,6 @@ public class UpcomingFragment extends SherlockFragment implements
         mGridView.setAdapter(mAdapter);
         mGridView.setOnItemClickListener(this);
 
-        // Start loading data
-        activity.getSupportLoaderManager().initLoader(getLoaderId(), null, this);
-
         // Register the preference change listener
         PreferenceManager.getDefaultSharedPreferences(activity)
                 .registerOnSharedPreferenceChangeListener(this);
