@@ -8,7 +8,7 @@
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
+ * distributed under the License is distributed on an "AS IS" BASIS, 
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
@@ -29,6 +29,10 @@ import com.battlelancer.seriesguide.ui.OverviewActivity;
 import com.battlelancer.seriesguide.ui.OverviewFragment;
 import com.uwetrottmann.seriesguide.R;
 
+/**
+ * Helpers used to create Home screen shortcuts to the overview page for a given
+ * TV show.
+ */
 public final class ShortcutUtils {
 
     /** {@link Intent} action used to create the shortcut */
@@ -42,6 +46,7 @@ public final class ShortcutUtils {
      * Adds a shortcut to the overview page of the given show to the Home
      * screen.
      * 
+     * @param context The {@link Context} to use.
      * @param showTitle The name of the shortcut.
      * @param posterPath The path to the cached (with {@link ImageProvider})
      *            image to be used for the shortcut icon.
@@ -64,15 +69,12 @@ public final class ShortcutUtils {
         intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
         intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, showTitle);
         if (icon == null) {
-            // fall back to the app icon
+            // Fall back to the app icon
             intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
                     ShortcutIconResource.fromContext(context, R.drawable.ic_launcher));
         } else {
-            intent.putExtra(
-                    Intent.EXTRA_SHORTCUT_ICON,
-                    resizeAndCropCenter(icon,
-                            context.getResources()
-                                    .getDimensionPixelSize(R.dimen.shortcut_icon_size)));
+            intent.putExtra(Intent.EXTRA_SHORTCUT_ICON, resizeAndCropCenter(icon,
+                    context.getResources().getDimensionPixelSize(R.dimen.shortcut_icon_size)));
         }
         intent.setAction(ACTION_INSTALL_SHORTCUT);
         context.sendBroadcast(intent);
@@ -84,6 +86,8 @@ public final class ShortcutUtils {
      * 
      * @param bitmap The {@link Bitmap} to resize.
      * @param size The size in pixels of the returned {@link Bitmap}.
+     * @return The given {@link Bitmap} resized into a square for a Home screen
+     *         shortcut.
      */
     public static Bitmap resizeAndCropCenter(Bitmap bitmap, int size) {
         final int w = bitmap.getWidth();
