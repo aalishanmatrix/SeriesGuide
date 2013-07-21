@@ -43,7 +43,7 @@
     </plurals>
 
     <string name="offline">No network connectivity. Try again later.</string>
-    <string name="onlyx">Only available in SeriesGuide X</string>
+    <string name="onlyx">Only available with X Subscription</string>
 
     <!-- Main Menu -->
     <string name="shows">Shows</string>
@@ -468,10 +468,12 @@
     </string-array>
 
     <string name="pref_widget_type">Widget type</string>
+    <string name="favorites">Favorites</string>
 
     <string-array name="widgetType">
         <item>Upcoming</item>
         <item>Recent</item>
+        <item>Favorites</item>
     </string-array>
 
     <!-- DashClock extension -->
@@ -500,6 +502,9 @@
     <string name="subscription_activated">You are now subscribed to X features.</string>
     <string name="subscription_expired">Subscription expired</string>
     <string name="subscription_expired_details">Your X features subscription has expired.</string>
+
+    <!-- Add to Homescreen -->
+    <string name="add_to_homescreen">Add to Home screen</string>
 
     <!-- Add to Homescreen -->
     <string name="add_to_homescreen">Add to Homescreen</string>

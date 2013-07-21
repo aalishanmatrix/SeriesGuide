@@ -228,16 +228,16 @@ public class OverviewFragment extends SherlockFragment implements
             }
             return true;
         } else if (itemId == R.id.menu_overview_add_to_homescreen) {
+            if (!Utils.hasAccessToX(getActivity())) {
+                Utils.advertiseSubscription(getActivity());
+                return true;
+            }
+            
             if (mShowCursor != null && mShowCursor.moveToFirst()) {
-                Activity activity = getActivity();
-
                 // Create the shortcut
                 String title = mShowCursor.getString(ShowQuery.SHOW_TITLE);
                 String poster = mShowCursor.getString(ShowQuery.SHOW_POSTER);
-                ShortcutUtils.createShortcut(activity, title, poster, getShowId());
-                // Notify the user everything went well
-                String confirm = " " + getString(R.string.add_to_homescreen_confirmation);
-                Toast.makeText(activity, title + confirm, Toast.LENGTH_SHORT).show();
+                ShortcutUtils.createShortcut(getActivity(), title, poster, getShowId());
 
                 // Analytics
                 fireTrackerEvent("Add to Homescreen");
