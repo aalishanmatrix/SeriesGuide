@@ -251,8 +251,6 @@ public final class ServiceUtils {
                         EasyTracker.getTracker().sendEvent(logTag, "Action Item", "Google Play",
                                 (long) 0);
                         searchGooglePlay(v.getContext(), title);
-                        String playStoreQuery = String.format(GOOGLE_PLAY, Uri.encode(title));
-                        intent.setData(Uri.parse(playStoreQuery));
                     }
                 });
             } else {
