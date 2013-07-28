@@ -145,9 +145,11 @@ public class MovieSearchFragment extends SherlockFragment implements OnEditorAct
         Movie movie = mAdapter.getItem(info.position);
         switch (item.getItemId()) {
             case CONTEXT_ADD_TO_WATCHLIST_ID: {
-                // Add item to watchlist
-                AndroidUtils.executeAsyncTask(
+                if (ServiceUtils.ensureTraktCredentials(getActivity())) {
+                    // Add item to watchlist
+                    AndroidUtils.executeAsyncTask(
                         new TraktTask(activity, null).watchlistMovie(movie.id), new Void[] {});
+                }
                 fireTrackerEvent("Add to watchlist");
                 return true;
             }
