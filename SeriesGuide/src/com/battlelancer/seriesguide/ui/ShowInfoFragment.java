@@ -97,12 +97,18 @@ public class ShowInfoFragment extends SherlockFragment implements LoaderCallback
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        boolean isDrawerOpen = ((BaseNavDrawerActivity) getActivity()).isMenuDrawerOpen();
+        menu.findItem(R.id.menu_show_manage_lists).setVisible(!isDrawerOpen);
+        menu.findItem(R.id.menu_show_share).setVisible(!isDrawerOpen);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        if (itemId == R.id.menu_show_rate) {
-            onRateOnTrakt();
-            return true;
-        } else if (itemId == R.id.menu_show_manage_lists) {
+        if (itemId == R.id.menu_show_manage_lists) {
             ListsDialogFragment.showListsDialog(String.valueOf(getShowTvdbId()),
                     ListItemTypes.SHOW, getFragmentManager());
             return true;

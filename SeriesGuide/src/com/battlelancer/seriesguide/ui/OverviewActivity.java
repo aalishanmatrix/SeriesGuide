@@ -35,13 +35,14 @@ import android.view.View;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.MenuItem;
-import com.battlelancer.seriesguide.adapters.TabPagerAdapter;
+import com.battlelancer.seriesguide.adapters.TabPagerIndicatorAdapter;
 import com.battlelancer.seriesguide.items.Series;
 import com.battlelancer.seriesguide.sync.SgSyncAdapter;
 import com.battlelancer.seriesguide.util.DBUtils;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.uwetrottmann.androidutils.AndroidUtils;
 import com.uwetrottmann.seriesguide.R;
+import com.viewpagerindicator.TabPageIndicator;
 
 import java.lang.ref.WeakReference;
 import java.nio.charset.Charset;
@@ -73,7 +74,7 @@ public class OverviewActivity extends BaseNavDrawerActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         // look if we are on a multi-pane or single-pane layout...
-        View pagerView = findViewById(R.id.pager);
+        View pagerView = findViewById(R.id.pagerOverview);
         if (pagerView != null && pagerView.getVisibility() == View.VISIBLE) {
             // ...single pane layout with view pager
 
@@ -158,15 +159,12 @@ public class OverviewActivity extends BaseNavDrawerActivity {
     }
 
     private void setupViewPager(View pagerView) {
-        final ActionBar actionBar = getSupportActionBar();
-
         ViewPager pager = (ViewPager) pagerView;
+        TabPageIndicator indicator = (TabPageIndicator) findViewById(R.id.indicatorOverview);
 
-        // setup action bar tabs
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-
-        TabPagerAdapter tabsAdapter = new TabPagerAdapter(getSupportFragmentManager(), this,
-                actionBar, pager);
+        // setup tab strip
+        TabPagerIndicatorAdapter tabsAdapter = new TabPagerIndicatorAdapter(
+                getSupportFragmentManager(), this, pager, indicator);
         Bundle argsShow = new Bundle();
         argsShow.putInt(ShowInfoFragment.InitBundle.SHOW_TVDBID, mShowId);
         tabsAdapter.addTab(R.string.show, ShowInfoFragment.class, argsShow);
@@ -179,7 +177,7 @@ public class OverviewActivity extends BaseNavDrawerActivity {
         tabsAdapter.addTab(R.string.seasons, SeasonsFragment.class, argsSeason);
 
         // select overview to be shown initially
-        actionBar.setSelectedNavigationItem(1);
+        indicator.setCurrentItem(1);
     }
 
     private void findAndRemoveFragment(int fragmentId) {
@@ -236,13 +234,16 @@ public class OverviewActivity extends BaseNavDrawerActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                Intent upIntent = new Intent(this, ShowsActivity.class);
-                upIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(upIntent);
-                overridePendingTransition(R.anim.shrink_enter, R.anim.shrink_exit);
-                return true;
+        int itemId = item.getItemId();
+        if (itemId == android.R.id.home) {
+            Intent upIntent = new Intent(this, ShowsActivity.class);
+            upIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(upIntent);
+            overridePendingTransition(R.anim.shrink_enter, R.anim.shrink_exit);
+            return true;
+        } else if (itemId == R.id.menu_overview_search) {
+            onSearchRequested();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

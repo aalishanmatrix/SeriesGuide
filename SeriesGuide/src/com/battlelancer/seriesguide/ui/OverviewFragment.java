@@ -194,6 +194,11 @@ public class OverviewFragment extends SherlockFragment implements
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.overview_menu, menu);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
 
         // enable/disable menu items
         boolean isEpisodeVisible;
@@ -204,16 +209,19 @@ public class OverviewFragment extends SherlockFragment implements
         }
         menu.findItem(R.id.menu_overview_manage_lists).setEnabled(isEpisodeVisible);
         menu.findItem(R.id.menu_overview_share).setEnabled(isEpisodeVisible);
-        menu.findItem(R.id.menu_overview_rate).setEnabled(isEpisodeVisible);
+
+        // If the nav drawer is open, hide action items related to the content
+        // view
+        boolean isDrawerOpen = ((BaseNavDrawerActivity) getActivity()).isMenuDrawerOpen();
+        menu.findItem(R.id.menu_overview_manage_lists).setVisible(!isDrawerOpen);
+        menu.findItem(R.id.menu_overview_share).setVisible(!isDrawerOpen);
+        menu.findItem(R.id.menu_overview_search).setVisible(!isDrawerOpen);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        if (itemId == R.id.menu_overview_rate) {
-            onRateOnTrakt();
-            return true;
-        } else if (itemId == R.id.menu_overview_share) {
+        if (itemId == R.id.menu_overview_share) {
             // share episode
             fireTrackerEvent("Share");
             onShareEpisode(ShareMethod.OTHER_SERVICES);
