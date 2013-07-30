@@ -38,7 +38,6 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.battlelancer.seriesguide.adapters.MoviesWatchListAdapter;
 import com.battlelancer.seriesguide.enums.TraktAction;
 import com.battlelancer.seriesguide.loaders.TraktMoviesWatchlistLoader;
-import com.battlelancer.seriesguide.util.ServiceUtils;
 import com.battlelancer.seriesguide.util.TraktTask;
 import com.battlelancer.seriesguide.util.TraktTask.TraktActionCompleteEvent;
 import com.google.analytics.tracking.android.EasyTracker;
@@ -59,7 +58,6 @@ public class MoviesWatchListFragment extends SherlockFragment implements
     private static final String TAG = "Movie Watchlist";
     private static final int LOADER_ID = R.layout.movies_watchlist_fragment;
     private static final int CONTEXT_REMOVE_ID = 0;
-    private static final int CONTENT_GOOGLE_PLAY = 1;
 
     private MoviesWatchListAdapter mAdapter;
     private GridView mGridView;
@@ -109,9 +107,6 @@ public class MoviesWatchListFragment extends SherlockFragment implements
         super.onCreateContextMenu(menu, v, menuInfo);
         // Remove from watchlist
         menu.add(0, CONTEXT_REMOVE_ID, 0, R.string.watchlist_remove);
-
-        // Search Google Play
-        menu.add(0, CONTENT_GOOGLE_PLAY, 0, R.string.googleplay);
     }
 
     @Override
@@ -136,11 +131,6 @@ public class MoviesWatchListFragment extends SherlockFragment implements
                 fireTrackerEvent("Remove from watchlist");
                 return true;
             }
-            case CONTENT_GOOGLE_PLAY:
-                // Search Google Play for the movie
-                ServiceUtils.searchGooglePlay(activity, movie.title);
-                fireTrackerEvent("Searching Google Play");
-                return true;
             default:
                 break;
         }

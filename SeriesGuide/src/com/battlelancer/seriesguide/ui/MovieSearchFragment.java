@@ -62,7 +62,6 @@ public class MovieSearchFragment extends SherlockFragment implements OnEditorAct
     private static final int LOADER_ID = R.layout.movies_fragment;
     protected static final String TAG = "Movies Search";
     private static final int CONTEXT_ADD_TO_WATCHLIST_ID = 0;
-    private static final int CONTENT_GOOGLE_PLAY = 1;
 
     private EditText mSearchBox;
     private MoviesAdapter mAdapter;
@@ -126,8 +125,6 @@ public class MovieSearchFragment extends SherlockFragment implements OnEditorAct
         if (ServiceUtils.isTraktCredentialsValid(getActivity())) {
             menu.add(0, CONTEXT_ADD_TO_WATCHLIST_ID, 0, R.string.watchlist_add);
         }
-        // Search Google Play
-        menu.add(0, CONTENT_GOOGLE_PLAY, 0, R.string.googleplay);
     }
 
     @Override
@@ -148,16 +145,11 @@ public class MovieSearchFragment extends SherlockFragment implements OnEditorAct
                 if (ServiceUtils.ensureTraktCredentials(getActivity())) {
                     // Add item to watchlist
                     AndroidUtils.executeAsyncTask(
-                        new TraktTask(activity, null).watchlistMovie(movie.id), new Void[] {});
+                            new TraktTask(activity, null).watchlistMovie(movie.id), new Void[] {});
                 }
                 fireTrackerEvent("Add to watchlist");
                 return true;
             }
-            case CONTENT_GOOGLE_PLAY:
-                // Search Google Play for the movie
-                ServiceUtils.searchGooglePlay(activity, movie.title);
-                fireTrackerEvent("Searching Google Play");
-                return true;
             default:
                 break;
         }
