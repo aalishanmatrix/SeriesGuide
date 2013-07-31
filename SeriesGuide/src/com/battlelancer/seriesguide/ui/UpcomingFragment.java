@@ -140,8 +140,7 @@ public class UpcomingFragment extends SherlockFragment implements
         mGridView.setAdapter(mAdapter);
         mGridView.setOnItemClickListener(this);
 
-        // Register the preference change listener
-        PreferenceManager.getDefaultSharedPreferences(activity)
+        PreferenceManager.getDefaultSharedPreferences(getActivity())
                 .registerOnSharedPreferenceChangeListener(this);
 
         // Register for a context menu to be shown
@@ -151,6 +150,14 @@ public class UpcomingFragment extends SherlockFragment implements
     @Override
     public void onStart() {
         super.onStart();
+
+        /**
+         * Workaround for loader issues on config change. For some reason the
+         * activity holds on to an old cursor. Find out why! See
+         * https://github.com/UweTrottmann/SeriesGuide/issues/257.
+         */
+        onRequery();
+
         final String tag = getArguments().getString("analyticstag");
         EasyTracker.getTracker().sendView(tag);
         // Ensure the correct data is displayed after an orientation change
@@ -328,14 +335,6 @@ public class UpcomingFragment extends SherlockFragment implements
         int IMDBID = 11;
 
     }
-
-    protected OnItemClickListener mCheckinButtonListener = new OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            // TODO Auto-generated method stub
-
-        }
-    };
 
     private class SlowAdapter extends CursorAdapter implements StickyGridHeadersBaseAdapter {
 
@@ -587,7 +586,7 @@ public class UpcomingFragment extends SherlockFragment implements
 
             return headers;
         }
-        
+
         @Override
         public Cursor swapCursor(Cursor newCursor) {
             mHeaders = null;
