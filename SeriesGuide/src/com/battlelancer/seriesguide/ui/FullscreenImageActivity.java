@@ -23,22 +23,32 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.battlelancer.seriesguide.util.ImageProvider;
+import com.battlelancer.seriesguide.util.ShareUtils;
+import com.battlelancer.seriesguide.util.ShareUtils.ShareItems;
+import com.battlelancer.seriesguide.util.ShareUtils.ShareMethod;
 import com.battlelancer.seriesguide.util.SystemUiHider;
 import com.battlelancer.seriesguide.util.SystemUiHider.OnVisibilityChangeListener;
+import com.google.analytics.tracking.android.EasyTracker;
 import com.uwetrottmann.seriesguide.R;
 
 /**
  * This {@link Activity} is used to display a full screen image of a TV show's
  * poster, or the image provided for a specific episode.
  */
-public class FullscreenImageActivity extends Activity implements Runnable {
+public class FullscreenImageActivity extends FragmentActivity implements Runnable {
+
+    /** Log tag */
+    private static final String TAG = "FullscreenImageActivity";
 
     /** The {@link Intent} extra used to deliver the path to the requested image */
-    public static final String PATH = "fullscreenimageactivity.intent.extra.image";
+    public static final String PATH = ShareItems.IMAGE;
 
     /**
      * The number of milliseconds to wait after user interaction before hiding
@@ -58,15 +68,18 @@ public class FullscreenImageActivity extends Activity implements Runnable {
     /** Displays the poster or episode preview */
     private ImageView mContentView;
 
+    /** The {@link Bundle} passed into this activity */
+    private Bundle mArgs;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fullscreen_image_activity);
-
         mContentView = (ImageView) findViewById(R.id.fullscreen_content);
 
         // Load the requested image
-        String imagePath = getIntent().getExtras().getString(PATH);
+        mArgs = getIntent().getExtras();
+        String imagePath = mArgs.getString(PATH);
         mContentView.setImageBitmap(ImageProvider.getInstance(this).getImage(imagePath, false));
 
         // Set up an instance of SystemUiHider to control the system UI for
@@ -93,9 +106,19 @@ public class FullscreenImageActivity extends Activity implements Runnable {
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        delayedHide(100);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.fullscreen_image_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_share) {
+            ShareUtils.onShareEpisode(this, mArgs, ShareMethod.OTHER_SERVICES);
+            EasyTracker.getTracker().sendEvent(TAG, "Action Item", "Share", null);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
