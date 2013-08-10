@@ -264,7 +264,9 @@ public final class ServiceUtils {
         editor.commit();
 
         // remove from memory
-        ServiceUtils.sTraktServiceManagerWithAuthInstance.setAuthentication(null, null);
+        if (sTraktServiceManagerWithAuthInstance != null) {
+            sTraktServiceManagerWithAuthInstance.setAuthentication(null, null);
+        }
     }
 
     /**
