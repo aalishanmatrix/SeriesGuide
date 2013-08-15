@@ -75,6 +75,7 @@ public class EpisodeDetailsActivity extends BaseNavDrawerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getMenu().setContentView(R.layout.episode_pager);
+        getWindow().setBackgroundDrawable(null);
 
         final int episodeId = getIntent().getIntExtra(InitBundle.EPISODE_TVDBID, 0);
         if (episodeId == 0) {
