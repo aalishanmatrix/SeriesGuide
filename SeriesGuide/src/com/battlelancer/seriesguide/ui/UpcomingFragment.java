@@ -160,8 +160,6 @@ public class UpcomingFragment extends SherlockFragment implements
 
         final String tag = getArguments().getString("analyticstag");
         EasyTracker.getTracker().sendView(tag);
-        // Ensure the correct data is displayed after an orientation change
-        onRequery();
     }
 
     @Override
