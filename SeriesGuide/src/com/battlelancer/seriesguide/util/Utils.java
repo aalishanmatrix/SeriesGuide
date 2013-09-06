@@ -30,8 +30,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.preference.PreferenceManager;
-import android.support.v4.app.TaskStackBuilder;
-import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
@@ -102,9 +100,6 @@ public class Utils {
     /**
      * Parse a shows TVDb air time value to a ms value in Pacific Standard Time
      * (always without daylight saving).
-     * 
-     * @param tvdbTimeString
-     * @return
      */
     public static long parseTimeToMilliseconds(String tvdbTimeString) {
         Date time = null;
@@ -150,11 +145,6 @@ public class Utils {
      * Parse a shows airtime ms value to an actual time. If given a TVDb day
      * string the day will get determined, too, all respecting user settings
      * like time zone and time offset.
-     * 
-     * @param milliseconds
-     * @param dayofweek
-     * @param context
-     * @return
      */
     public static String[] parseMillisecondsToTime(long milliseconds, String dayofweek,
             Context context) {
@@ -225,8 +215,7 @@ public class Utils {
      * given TVDb airday string (Monday through Sunday and Daily). If no match
      * is found -1 will be returned.
      * 
-     * @param TVDb day string
-     * @return
+     * @param day TVDb day string
      */
     private static int getDayOfWeek(String day) {
         // catch Daily
@@ -312,10 +301,6 @@ public class Utils {
     /**
      * Return date string of the given time, prefixed with the actual day of the
      * week (e.g. 'Mon, ') or 'today, ' if applicable.
-     * 
-     * @param airtime
-     * @param context
-     * @return
      */
     public static String formatToDate(long airtime, Context context) {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -342,10 +327,6 @@ public class Utils {
     /**
      * Create a calendar set to the given airtime, time is adjusted according to
      * 'Use my time zone', 'Time Offset' settings and user time zone.
-     * 
-     * @param airtime
-     * @param prefs
-     * @return
      */
     public static Calendar getAirtimeCalendar(long airtime, final SharedPreferences prefs) {
         Calendar cal = Calendar.getInstance();
@@ -358,9 +339,6 @@ public class Utils {
 
     /**
      * Add user set manual offset and auto-offset for US time zones.
-     * 
-     * @param prefs
-     * @param cal
      */
     private static void setOffsets(SharedPreferences prefs, Calendar cal, long airtime) {
         boolean pacificInDaylight = TimeZone.getTimeZone(TIMEZONE_US_PACIFIC).inDaylightTime(
@@ -403,9 +381,6 @@ public class Utils {
     /**
      * To correctly display and calculate upcoming episodes we need to modify
      * the current time to be later/earlier. Also respecting user-set offsets.
-     * 
-     * @param prefs
-     * @return
      */
     public static long getFakeCurrentTime(SharedPreferences prefs) {
         return convertToFakeTime(System.currentTimeMillis(), prefs, true);
@@ -414,10 +389,6 @@ public class Utils {
     /**
      * Modify a time to be earlier/later respecting user-set offsets and
      * automatic offsets based on time zone.
-     * 
-     * @param prefs
-     * @param isCurrentTime
-     * @return
      */
     public static long convertToFakeTime(long time, SharedPreferences prefs, boolean isCurrentTime) {
         boolean pacificInDaylight = TimeZone.getTimeZone(TIMEZONE_US_PACIFIC).inDaylightTime(
@@ -486,8 +457,7 @@ public class Utils {
                 dayCal.set(Calendar.MILLISECOND, 0);
             }
 
-            long episodeAirtime = dayCal.getTimeInMillis();
-            return episodeAirtime;
+            return dayCal.getTimeInMillis();
 
         } catch (ParseException e) {
             // we just return -1 then
@@ -545,9 +515,6 @@ public class Utils {
     /**
      * Splits the string and reassembles it, separating the items with commas.
      * The given object is returned with the new string.
-     * 
-     * @param tvdbstring
-     * @return
      */
     public static String splitAndKitTVDBStrings(String tvdbstring) {
         if (tvdbstring == null) {
@@ -567,7 +534,6 @@ public class Utils {
     /**
      * Get the currently set episode sorting from settings.
      * 
-     * @param context
      * @return a EpisodeSorting enum set to the current sorting
      */
     public static EpisodeSorting getEpisodeSorting(Context context) {
@@ -660,10 +626,6 @@ public class Utils {
     /**
      * Put the TVDb season number in, get a full 'Season X' or 'Special
      * Episodes' string out.
-     * 
-     * @param context
-     * @param seasonNumber
-     * @return
      */
     public static String getSeasonString(Context context, int seasonNumber) {
         if (seasonNumber == 0) {
@@ -707,9 +669,9 @@ public class Utils {
 
             return result;
         } catch (NoSuchAlgorithmException e) {
-            Utils.trackExceptionAndLog(context, TAG, e);
+            Utils.trackExceptionAndLog(TAG, e);
         } catch (UnsupportedEncodingException e) {
-            Utils.trackExceptionAndLog(context, TAG, e);
+            Utils.trackExceptionAndLog(TAG, e);
         }
         return null;
     }
@@ -837,11 +799,9 @@ public class Utils {
     /**
      * Sets the global app theme variable. Applied by all activities once they
      * are created.
-     * 
-     * @param themeIndex
      */
     public static synchronized void updateTheme(String themeIndex) {
-        int theme = Integer.valueOf((String) themeIndex);
+        int theme = Integer.valueOf(themeIndex);
         switch (theme) {
             case 1:
                 SeriesGuidePreferences.THEME = R.style.ICSBaseTheme;
@@ -858,7 +818,7 @@ public class Utils {
     /**
      * Tracks an exception using the Google Analytics {@link EasyTracker}.
      */
-    public static void trackException(Context context, String tag, Exception e) {
+    public static void trackException(String tag, Exception e) {
         EasyTracker.getTracker().sendException(tag + ": " + e.getMessage(), false);
     }
 
@@ -866,17 +826,14 @@ public class Utils {
      * Tracks an exception using the Google Analytics {@link EasyTracker} and
      * the local log.
      */
-    public static void trackExceptionAndLog(Context context, String tag, Exception e) {
-        trackException(context, tag, e);
+    public static void trackExceptionAndLog(String tag, Exception e) {
+        trackException(tag, e);
         Log.w(tag, e);
     }
 
     /**
      * Returns true if we are on a user-permitted and connected internet
      * connection.
-     * 
-     * @param context
-     * @return
      */
     public static boolean isAllowedConnection(Context context) {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -890,26 +847,12 @@ public class Utils {
     }
 
     /**
-     * Creates the tag of a {@link ViewPager} fragment.
-     * 
-     * @param viewId of the {@link ViewPager}
-     * @param id of the fragment, often the position
-     */
-    public static String makeViewPagerFragmentName(int viewId, long id) {
-        return "android:switcher:" + viewId + ":" + id;
-    }
-
-    /**
      * Launches {@link BillingActivity} and notifies that something is only
      * available with the X subscription.
      */
     public static void advertiseSubscription(Context context) {
         Toast.makeText(context, R.string.onlyx, Toast.LENGTH_SHORT).show();
-        TaskStackBuilder
-                .create(context)
-                .addNextIntent(new Intent(context, SeriesGuidePreferences.class))
-                .addNextIntent(new Intent(context, BillingActivity.class))
-                .startActivities();
+        context.startActivity(new Intent(context, BillingActivity.class));
     }
 
     /**
