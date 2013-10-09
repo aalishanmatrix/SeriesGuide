@@ -150,6 +150,7 @@ public class ImageProvider {
         // listen if user toggles .nomedia file pref
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         listener = new OnSharedPreferenceChangeListener() {
+            @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
                 if (key.equalsIgnoreCase(SeriesGuidePreferences.KEY_HIDEIMAGES)) {
                     updateNoMediaFile(sharedPreferences);

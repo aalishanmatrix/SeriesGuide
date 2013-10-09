@@ -23,6 +23,7 @@ import com.uwetrottmann.seriesguide.R;
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class UpcomingEpisodeSettingsActivity extends PreferenceActivity {
 
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActionBar().setIcon(R.drawable.ic_notification);

@@ -63,6 +63,7 @@ public class SortDialogFragment extends DialogFragment {
                 .setTitle(getString(getArguments().getInt("dialogtitle")))
                 .setSingleChoiceItems(items, getArguments().getInt("selected"),
                         new DialogInterface.OnClickListener() {
+                            @Override
                             public void onClick(DialogInterface dialog, int item) {
                                 final SharedPreferences.Editor editor = PreferenceManager
                                         .getDefaultSharedPreferences(getActivity()).edit();

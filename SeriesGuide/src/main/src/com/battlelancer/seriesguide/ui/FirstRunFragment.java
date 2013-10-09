@@ -157,6 +157,7 @@ public class FirstRunFragment extends SherlockFragment {
 
     public class OnLanguageSelectedListener implements OnItemSelectedListener {
 
+        @Override
         public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
             final SharedPreferences prefs = PreferenceManager
                     .getDefaultSharedPreferences(getActivity());
@@ -164,6 +165,7 @@ public class FirstRunFragment extends SherlockFragment {
             prefs.edit().putString(SeriesGuidePreferences.KEY_LANGUAGE, value).commit();
         }
 
+        @Override
         public void onNothingSelected(AdapterView<?> parent) {
             // Do nothing.
         }

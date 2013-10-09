@@ -580,6 +580,7 @@ public class Utils {
             mShowId = showId;
         }
 
+        @Override
         public void run() {
             final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
             final boolean isOnlyFutureEpisodes = prefs.getBoolean(

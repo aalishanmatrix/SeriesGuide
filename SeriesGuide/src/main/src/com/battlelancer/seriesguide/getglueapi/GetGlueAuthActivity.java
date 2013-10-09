@@ -78,6 +78,7 @@ public class GetGlueAuthActivity extends BaseNavDrawerActivity {
 
         final SherlockFragmentActivity activity = this;
         mWebview.setWebChromeClient(new WebChromeClient() {
+            @Override
             public void onProgressChanged(WebView view, int progress) {
                 /*
                  * Activities and WebViews measure progress with different
@@ -88,6 +89,7 @@ public class GetGlueAuthActivity extends BaseNavDrawerActivity {
             }
         });
         mWebview.setWebViewClient(new WebViewClient() {
+            @Override
             public void onReceivedError(WebView view, int errorCode, String description,
                     String failingUrl) {
                 Toast.makeText(activity,

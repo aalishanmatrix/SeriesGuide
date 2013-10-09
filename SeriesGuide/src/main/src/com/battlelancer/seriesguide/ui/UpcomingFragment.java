@@ -256,6 +256,7 @@ public class UpcomingFragment extends SherlockFragment implements
         return getArguments().getInt("loaderid");
     }
 
+    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String type = getArguments().getString(InitBundle.TYPE);
         boolean isInfiniteScrolling = ActivitySettings.isInfiniteScrolling(getActivity());
@@ -268,10 +269,12 @@ public class UpcomingFragment extends SherlockFragment implements
                 UpcomingQuery.PROJECTION, queryArgs[0][0], queryArgs[1], queryArgs[2][0]);
     }
 
+    @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mAdapter.swapCursor(data);
     }
 
+    @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
     }
@@ -412,6 +415,7 @@ public class UpcomingFragment extends SherlockFragment implements
             final int episodeTvdbId = mCursor.getInt(UpcomingQuery._ID);
             final int episode = mCursor.getInt(UpcomingQuery.NUMBER);
             viewHolder.watchedBox.setOnClickListener(new OnClickListener() {
+                @Override
                 public void onClick(View v) {
                     WatchedBox checkBox = (WatchedBox) v;
                     checkBox.toggle();

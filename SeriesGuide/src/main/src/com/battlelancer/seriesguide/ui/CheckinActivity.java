@@ -113,6 +113,7 @@ public class CheckinActivity extends BaseNavDrawerActivity implements LoaderCall
         GridView list = (GridView) findViewById(R.id.gridViewCheckinShows);
         list.setAdapter(mAdapter);
         list.setOnItemClickListener(new OnItemClickListener() {
+            @Override
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 Cursor show = (Cursor) mAdapter.getItem(position);
                 int episodeTvdbId = show.getInt(CheckinQuery.NEXTEPISODE);

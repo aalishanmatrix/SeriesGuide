@@ -203,6 +203,7 @@ public class SeriesGuidePreferences extends SherlockPreferenceActivity implement
         getGluePref.setEnabled(GetGlue.isAuthenticated(prefs));
         getGluePref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
+            @Override
             public boolean onPreferenceClick(Preference preference) {
                 fireTrackerEvent("Disonnect GetGlue");
 
@@ -221,6 +222,7 @@ public class SeriesGuidePreferences extends SherlockPreferenceActivity implement
         // No aired episodes
         noAiredPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
+            @Override
             public boolean onPreferenceClick(Preference preference) {
                 if (((CheckBoxPreference) preference).isChecked()) {
                     EasyTracker.getTracker().sendEvent(TAG, "OnlyFutureEpisodes", "Enable",
@@ -236,6 +238,7 @@ public class SeriesGuidePreferences extends SherlockPreferenceActivity implement
         // No special episodes
         noSpecialsPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
+            @Override
             public boolean onPreferenceClick(Preference preference) {
                 if (((CheckBoxPreference) preference).isChecked()) {
                     EasyTracker.getTracker().sendEvent(TAG, "OnlySeasonEpisodes", "Enable",
@@ -315,6 +318,7 @@ public class SeriesGuidePreferences extends SherlockPreferenceActivity implement
         // Clear image cache
         clearCachePref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
+            @Override
             public boolean onPreferenceClick(Preference preference) {
                 fireTrackerEvent("Clear Image Cache");
 
@@ -431,6 +435,7 @@ public class SeriesGuidePreferences extends SherlockPreferenceActivity implement
         if (key.equals(KEY_LANGUAGE)) {
             // reset last edit date of all episodes so they will get updated
             new Thread(new Runnable() {
+                @Override
                 public void run() {
                     ContentValues values = new ContentValues();
                     values.put(Episodes.LAST_EDITED, 0);

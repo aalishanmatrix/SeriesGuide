@@ -345,6 +345,7 @@ public class EpisodeDetailsFragment extends SherlockListFragment implements
                 showtitle.setVisibility(View.VISIBLE);
                 showtitle.setText(showTitle);
                 showtitle.setOnClickListener(new OnClickListener() {
+                    @Override
                     public void onClick(View v) {
                         Intent upIntent = new Intent(getActivity(), OverviewActivity.class);
                         upIntent.putExtra(OverviewFragment.InitBundle.SHOW_TVDBID, mShowTvdbId);

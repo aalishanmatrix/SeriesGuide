@@ -388,6 +388,7 @@ public class SeasonsFragment extends SherlockListFragment implements
             this.setName("UpdateWatchStatsThread");
         }
 
+        @Override
         public void run() {
             final FragmentActivity context = getActivity();
             if (context == null) {
@@ -430,18 +431,21 @@ public class SeasonsFragment extends SherlockListFragment implements
                 SeriesGuidePreferences.KEY_SEASON_SORT_ORDER, SeasonSorting.LATEST_FIRST.value()));
     }
 
+    @Override
     public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
         return new CursorLoader(getActivity(), Seasons.buildSeasonsOfShowUri(String
                 .valueOf(getShowId())), SeasonsQuery.PROJECTION, SeasonsQuery.SELECTION, null,
                 mSorting.query());
     }
 
+    @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         // Swap the new cursor in. (The framework will take care of closing the
         // old cursor once we return.)
         mAdapter.swapCursor(data);
     }
 
+    @Override
     public void onLoaderReset(Loader<Cursor> arg0) {
         // This is called when the last Cursor provided to onLoadFinished()
         // above is about to be closed. We need to make sure we are no
@@ -527,6 +531,7 @@ public class SeasonsFragment extends SherlockListFragment implements
 
     private final OnSharedPreferenceChangeListener mPrefsListener = new OnSharedPreferenceChangeListener() {
 
+        @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             if (key.equals(SeriesGuidePreferences.KEY_SEASON_SORT_ORDER)) {
                 updateSorting(sharedPreferences);

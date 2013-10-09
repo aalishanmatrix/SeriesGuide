@@ -93,6 +93,7 @@ public class BackupDeleteActivity extends BaseActivity {
     private void setupViews() {
         mExportDbToSdButton = (Button) findViewById(R.id.ButtonExportDBtoSD);
         mExportDbToSdButton.setOnClickListener(new OnClickListener() {
+            @Override
             public void onClick(final View v) {
                 showDialog(EXPORT_DIALOG);
             }
@@ -100,6 +101,7 @@ public class BackupDeleteActivity extends BaseActivity {
 
         mImportDbFromSdButton = (Button) findViewById(R.id.ButtonImportDBfromSD);
         mImportDbFromSdButton.setOnClickListener(new OnClickListener() {
+            @Override
             public void onClick(final View v) {
                 showDialog(IMPORT_DIALOG);
             }
@@ -307,6 +309,7 @@ public class BackupDeleteActivity extends BaseActivity {
                         .setMessage(getString(R.string.backup_question))
                         .setPositiveButton(getString(R.string.backup_yes),
                                 new DialogInterface.OnClickListener() {
+                                    @Override
                                     public void onClick(DialogInterface arg0, int arg1) {
                                         if (AndroidUtils.isExtStorageAvailable()) {
                                             mExportTask = new ExportDatabaseTask();
@@ -323,6 +326,7 @@ public class BackupDeleteActivity extends BaseActivity {
                         .setMessage(getString(R.string.import_question))
                         .setPositiveButton(getString(R.string.import_yes),
                                 new DialogInterface.OnClickListener() {
+                                    @Override
                                     public void onClick(DialogInterface arg0, int arg1) {
                                         if (AndroidUtils.isExtStorageAvailable()) {
                                             mImportTask = new ImportDatabaseTask();

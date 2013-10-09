@@ -90,11 +90,13 @@ public class TraktRateDialogFragment extends DialogFragment {
         final View layout = inflater.inflate(R.layout.trakt_rate_dialog, null);
 
         layout.findViewById(R.id.totallyninja).setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 onRate(Rating.TotallyNinja, context);
             }
         });
         layout.findViewById(R.id.weaksauce).setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 onRate(Rating.WeakSauce, context);
             }
@@ -102,41 +104,49 @@ public class TraktRateDialogFragment extends DialogFragment {
 
         // advanced rating steps
         layout.findViewById(R.id.rating2).setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 onRate(Rating.Terrible, context);
             }
         });
         layout.findViewById(R.id.rating3).setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 onRate(Rating.Bad, context);
             }
         });
         layout.findViewById(R.id.rating4).setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 onRate(Rating.Poor, context);
             }
         });
         layout.findViewById(R.id.rating5).setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 onRate(Rating.Meh, context);
             }
         });
         layout.findViewById(R.id.rating6).setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 onRate(Rating.Fair, context);
             }
         });
         layout.findViewById(R.id.rating7).setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 onRate(Rating.Good, context);
             }
         });
         layout.findViewById(R.id.rating8).setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 onRate(Rating.Great, context);
             }
         });
         layout.findViewById(R.id.rating9).setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 onRate(Rating.Superb, context);
             }

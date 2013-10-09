@@ -193,6 +193,7 @@ public class SlidingMenuFragment extends ListFragment {
             return false;
         }
 
+        @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             Object item = getItem(position);
 

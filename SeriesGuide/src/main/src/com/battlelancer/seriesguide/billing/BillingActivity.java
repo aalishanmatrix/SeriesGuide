@@ -74,6 +74,7 @@ public class BillingActivity extends BaseActivity {
 
         Log.d(TAG, "Starting setup.");
         mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+            @Override
             public void onIabSetupFinished(IabResult result) {
                 Log.d(TAG, "Setup finished.");
 
@@ -151,6 +152,7 @@ public class BillingActivity extends BaseActivity {
     // Listener that's called when we finish querying the items and
     // subscriptions we own
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
+        @Override
         public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
             Log.d(TAG, "Query inventory finished.");
             if (result.isFailure()) {
@@ -295,6 +297,7 @@ public class BillingActivity extends BaseActivity {
 
     // Callback for when a purchase is finished
     IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
+        @Override
         public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
             Log.d(TAG, "Purchase finished: " + result + ", purchase: " + purchase);
             if (result.isFailure()) {

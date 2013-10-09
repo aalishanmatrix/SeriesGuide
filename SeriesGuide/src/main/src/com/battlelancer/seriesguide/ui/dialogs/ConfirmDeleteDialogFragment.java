@@ -111,6 +111,7 @@ public class ConfirmDeleteDialogFragment extends DialogFragment {
                             progress.show();
 
                             new Thread(new Runnable() {
+                                @Override
                                 public void run() {
                                     DBUtils.deleteShow(getActivity(), getArguments()
                                             .getString("showid"), progress);

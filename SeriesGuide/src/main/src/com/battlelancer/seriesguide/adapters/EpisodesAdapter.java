@@ -84,6 +84,7 @@ public class EpisodesAdapter extends CursorAdapter {
         final int episodeId = mCursor.getInt(EpisodesQuery._ID);
         final int episodeNumber = mCursor.getInt(EpisodesQuery.NUMBER);
         viewHolder.watchedBox.setOnClickListener(new OnClickListener() {
+            @Override
             public void onClick(View v) {
                 ((WatchedBox) v).toggle();
                 mOnFlagListener.onFlagEpisodeWatched(episodeId, episodeNumber,

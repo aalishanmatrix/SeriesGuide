@@ -35,10 +35,12 @@ public class SearchResult implements Parcelable {
     public boolean isAdded;
 
     public static final Parcelable.Creator<SearchResult> CREATOR = new Parcelable.Creator<SearchResult>() {
+        @Override
         public SearchResult createFromParcel(Parcel in) {
             return new SearchResult(in);
         }
 
+        @Override
         public SearchResult[] newArray(int size) {
             return new SearchResult[size];
         }

@@ -182,21 +182,25 @@ public class TheTVDB {
         Element item = root.getChild("Series");
         // set handlers for elements we want to react to
         item.setEndElementListener(new EndElementListener() {
+            @Override
             public void end() {
                 series.add(currentShow.copy());
             }
         });
         item.getChild("id").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 currentShow.tvdbid = body;
             }
         });
         item.getChild("SeriesName").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 currentShow.title = body.trim();
             }
         });
         item.getChild("Overview").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 currentShow.overview = body.trim();
             }
@@ -410,52 +414,62 @@ public class TheTVDB {
 
         // set handlers for elements we want to react to
         show.getChild("id").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 // NumberFormatException may be thrown, will stop parsing
                 currentShow.tvdbId = Integer.parseInt(body);
             }
         });
         show.getChild("SeriesName").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 currentShow.title = body;
             }
         });
         show.getChild("Overview").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 currentShow.overview = body;
             }
         });
         show.getChild("Actors").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 currentShow.actors = body.trim();
             }
         });
         show.getChild("Airs_DayOfWeek").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 currentShow.airday = body.trim();
             }
         });
         show.getChild("Airs_Time").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 currentShow.airtime = Utils.parseTimeToMilliseconds(body.trim());
             }
         });
         show.getChild("FirstAired").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 currentShow.firstAired = body;
             }
         });
         show.getChild("Genre").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 currentShow.genres = body.trim();
             }
         });
         show.getChild("Network").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 currentShow.network = body;
             }
         });
         show.getChild("Rating").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 try {
                     currentShow.rating = Double.parseDouble(body);
@@ -465,6 +479,7 @@ public class TheTVDB {
             }
         });
         show.getChild("Runtime").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 try {
                     currentShow.runtime = Integer.parseInt(body);
@@ -475,6 +490,7 @@ public class TheTVDB {
             }
         });
         show.getChild("Status").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 if (body.length() == 10) {
                     currentShow.status = ShowStatusExport.CONTINUING;
@@ -486,11 +502,13 @@ public class TheTVDB {
             }
         });
         show.getChild("ContentRating").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 currentShow.contentRating = body;
             }
         });
         show.getChild("poster").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 currentShow.poster = body;
                 if (body.length() != 0) {
@@ -499,11 +517,13 @@ public class TheTVDB {
             }
         });
         show.getChild("IMDB_ID").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 currentShow.imdbId = body.trim();
             }
         });
         show.getChild("lastupdated").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 try {
                     currentShow.lastEdited = Long.parseLong(body);
@@ -553,6 +573,7 @@ public class TheTVDB {
 
         // set handlers for elements we want to react to
         episode.setEndElementListener(new EndElementListener() {
+            @Override
             public void end() {
                 long episodeId = values.getAsLong(Episodes._ID);
                 existingEpisodeIds.remove(episodeId);
@@ -586,32 +607,38 @@ public class TheTVDB {
             }
         });
         episode.getChild("id").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 values.put(Episodes._ID, body.trim());
             }
         });
         episode.getChild("EpisodeNumber").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 values.put(Episodes.NUMBER, body.trim());
             }
         });
         episode.getChild("absolute_number").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 values.put(Episodes.ABSOLUTE_NUMBER, body.trim());
             }
         });
         episode.getChild("SeasonNumber").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 values.put(Episodes.SEASON, body.trim());
             }
         });
         episode.getChild("DVD_episodenumber").setEndTextElementListener(
                 new EndTextElementListener() {
+                    @Override
                     public void end(String body) {
                         values.put(Episodes.DVDNUMBER, body.trim());
                     }
                 });
         episode.getChild("FirstAired").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 long episodeAirTime = Utils.buildEpisodeAirtime(body, show.airtime);
                 values.put(Episodes.FIRSTAIREDMS, episodeAirTime);
@@ -619,56 +646,67 @@ public class TheTVDB {
             }
         });
         episode.getChild("EpisodeName").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 values.put(Episodes.TITLE, body.trim());
             }
         });
         episode.getChild("Overview").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 values.put(Episodes.OVERVIEW, body.trim());
             }
         });
         episode.getChild("seasonid").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 values.put(Seasons.REF_SEASON_ID, body.trim());
             }
         });
         episode.getChild("seriesid").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 values.put(Shows.REF_SHOW_ID, body.trim());
             }
         });
         episode.getChild("Director").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 values.put(Episodes.DIRECTORS, body.trim());
             }
         });
         episode.getChild("GuestStars").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 values.put(Episodes.GUESTSTARS, body.trim());
             }
         });
         episode.getChild("Writer").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 values.put(Episodes.WRITERS, body.trim());
             }
         });
         episode.getChild("Rating").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 values.put(Episodes.RATING, body.trim());
             }
         });
         episode.getChild("filename").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 values.put(Episodes.IMAGE, body.trim());
             }
         });
         episode.getChild("IMDB_ID").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 values.put(Episodes.IMDBID, body.trim());
             }
         });
         episode.getChild("lastupdated").setEndTextElementListener(new EndTextElementListener() {
+            @Override
             public void end(String body) {
                 // system populated field, trimming not necessary
                 try {

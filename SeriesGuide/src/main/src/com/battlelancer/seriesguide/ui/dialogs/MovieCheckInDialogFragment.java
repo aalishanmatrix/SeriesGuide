@@ -65,6 +65,7 @@ public class MovieCheckInDialogFragment extends GenericCheckInDialogFragment {
         EasyTracker.getTracker().sendView("Movie Check-In Dialog");
     }
 
+    @Override
     protected void onGetGlueCheckin(final SharedPreferences prefs, final String imdbid,
             final String message) {
         boolean isAbortingCheckIn = false;
@@ -98,6 +99,7 @@ public class MovieCheckInDialogFragment extends GenericCheckInDialogFragment {
     /**
      * Start the trakt check in task.
      */
+    @Override
     protected void onTraktCheckIn(String message) {
         final String imdbId = getArguments().getString(InitBundle.IMDB_ID);
         AndroidUtils.executeAsyncTask(
@@ -107,6 +109,7 @@ public class MovieCheckInDialogFragment extends GenericCheckInDialogFragment {
                 });
     }
 
+    @Override
     protected void handleGetGlueToggle(final SharedPreferences prefs, final String imdbid,
             boolean isChecked) {
         if (isChecked) {

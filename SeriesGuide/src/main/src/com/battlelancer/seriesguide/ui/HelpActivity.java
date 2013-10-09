@@ -41,6 +41,7 @@ public class HelpActivity extends BaseNavDrawerActivity {
 
         final BaseNavDrawerActivity activity = this;
         mWebview.setWebChromeClient(new WebChromeClient() {
+            @Override
             public void onProgressChanged(WebView view, int progress) {
                 /*
                  * Activities and WebViews measure progress with different
@@ -60,6 +61,7 @@ public class HelpActivity extends BaseNavDrawerActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
     public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.menu_feedback) {

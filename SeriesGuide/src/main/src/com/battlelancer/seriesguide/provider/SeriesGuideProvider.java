@@ -165,6 +165,7 @@ public class SeriesGuideProvider extends ContentProvider {
 
     final OnSharedPreferenceChangeListener mImportListener = new OnSharedPreferenceChangeListener() {
 
+        @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             if (key.equalsIgnoreCase(SeriesGuidePreferences.KEY_DATABASEIMPORTED)) {
                 if (sharedPreferences

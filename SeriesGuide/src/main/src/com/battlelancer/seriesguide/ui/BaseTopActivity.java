@@ -41,6 +41,7 @@ public abstract class BaseTopActivity extends BaseNavDrawerActivity {
 
             Log.d(TAG, "Starting In-App Billing helper setup.");
             mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+                @Override
                 public void onIabSetupFinished(IabResult result) {
                     Log.d(TAG, "Setup finished.");
 
@@ -129,6 +130,7 @@ public abstract class BaseTopActivity extends BaseNavDrawerActivity {
     // Listener that's called when we finish querying the items and
     // subscriptions we own
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
+        @Override
         public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
             Log.d(TAG, "Query inventory finished.");
             if (result.isFailure()) {

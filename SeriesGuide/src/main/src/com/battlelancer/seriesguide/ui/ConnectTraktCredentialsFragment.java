@@ -95,6 +95,7 @@ public class ConnectTraktCredentialsFragment extends SherlockFragment {
 
         CheckBox newAccCheckBox = (CheckBox) layout.findViewById(R.id.checkNewAccount);
         newAccCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+            @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     mailviews.setVisibility(View.VISIBLE);

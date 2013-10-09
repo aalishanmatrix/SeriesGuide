@@ -63,6 +63,7 @@ public class ListWidgetService extends RemoteViewsService {
                     AppWidgetManager.INVALID_APPWIDGET_ID);
         }
 
+        @Override
         public void onCreate() {
             // In onCreate() you setup any connections / cursors to your data
             // source. Heavy lifting, for example downloading or creating
@@ -98,12 +99,14 @@ public class ListWidgetService extends RemoteViewsService {
             }
         }
 
+        @Override
         public void onDestroy() {
             // In onDestroy() you should tear down anything that was setup for
             // your data source, eg. cursors, connections, etc.
             mDataCursor.close();
         }
 
+        @Override
         public int getCount() {
             if (mDataCursor != null) {
                 return mDataCursor.getCount();
@@ -112,6 +115,7 @@ public class ListWidgetService extends RemoteViewsService {
             }
         }
 
+        @Override
         public RemoteViews getViewAt(int position) {
             final boolean isShowQuery = mTypeIndex == WidgetSettings.Type.FAVORITES;
 
@@ -180,6 +184,7 @@ public class ListWidgetService extends RemoteViewsService {
             return rv;
         }
 
+        @Override
         public RemoteViews getLoadingView() {
             // You can create a custom loading view (for instance when
             // getViewAt() is slow.) If you return null here, you will get the
@@ -187,18 +192,22 @@ public class ListWidgetService extends RemoteViewsService {
             return null;
         }
 
+        @Override
         public int getViewTypeCount() {
             return 1;
         }
 
+        @Override
         public long getItemId(int position) {
             return position;
         }
 
+        @Override
         public boolean hasStableIds() {
             return true;
         }
 
+        @Override
         public void onDataSetChanged() {
             // This is triggered when you call AppWidgetManager
             // notifyAppWidgetViewDataChanged

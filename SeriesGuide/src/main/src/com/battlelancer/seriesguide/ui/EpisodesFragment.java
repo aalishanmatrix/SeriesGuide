@@ -353,15 +353,18 @@ public class EpisodesFragment extends SherlockListFragment implements
         mSorting = Utils.getEpisodeSorting(getActivity());
     }
 
+    @Override
     public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
         return new CursorLoader(getActivity(), Episodes.buildEpisodesOfSeasonWithShowUri(String
                 .valueOf(getSeasonId())), EpisodesQuery.PROJECTION, null, null, mSorting.query());
     }
 
+    @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         mAdapter.swapCursor(cursor);
     }
 
+    @Override
     public void onLoaderReset(Loader<Cursor> arg0) {
         mAdapter.swapCursor(null);
     }
@@ -401,6 +404,7 @@ public class EpisodesFragment extends SherlockListFragment implements
 
     private final OnSharedPreferenceChangeListener mPrefsListener = new OnSharedPreferenceChangeListener() {
 
+        @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             if (key.equals(SeriesGuidePreferences.KEY_EPISODE_SORT_ORDER)) {
                 updateSorting(sharedPreferences);

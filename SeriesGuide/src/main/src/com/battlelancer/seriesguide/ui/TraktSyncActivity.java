@@ -79,6 +79,7 @@ public class TraktSyncActivity extends BaseActivity {
         final Button syncToDeviceButton = (Button) findViewById(R.id.syncToDeviceButton);
         syncToDeviceButton.setOnClickListener(new OnClickListener() {
     
+            @Override
             public void onClick(View v) {
                 fireTrackerEvent("Download to SeriesGuide");
                 if (mSyncTask == null

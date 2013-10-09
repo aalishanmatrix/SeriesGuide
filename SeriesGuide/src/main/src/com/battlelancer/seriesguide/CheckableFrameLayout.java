@@ -36,6 +36,7 @@ public class CheckableFrameLayout extends FrameLayout implements Checkable {
         super(context, attrs);
     }
 
+    @Override
     public void setChecked(boolean checked) {
         mChecked = checked;
         if (SeriesGuidePreferences.THEME == R.style.ICSBaseTheme) {
@@ -45,10 +46,12 @@ public class CheckableFrameLayout extends FrameLayout implements Checkable {
         }
     }
 
+    @Override
     public boolean isChecked() {
         return mChecked;
     }
 
+    @Override
     public void toggle() {
         setChecked(!mChecked);
     }

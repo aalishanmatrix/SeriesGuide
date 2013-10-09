@@ -79,6 +79,7 @@ public class TvdbAddFragment extends AddFragment {
         ImageButton searchButton = (ImageButton) getView().findViewById(R.id.clearButton);
         searchButton.setOnClickListener(new OnClickListener() {
 
+            @Override
             public void onClick(View v) {
                 onClearInput();
             }
@@ -87,6 +88,7 @@ public class TvdbAddFragment extends AddFragment {
         mSearchBox = (EditText) getView().findViewById(R.id.searchbox);
         mSearchBox.setOnKeyListener(new OnKeyListener() {
 
+            @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // we only want to react to down events
                 if (event.getAction() != KeyEvent.ACTION_DOWN)

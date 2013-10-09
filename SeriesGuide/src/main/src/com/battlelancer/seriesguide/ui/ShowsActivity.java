@@ -323,6 +323,7 @@ public class ShowsActivity extends BaseTopShowsActivity implements OnFirstRunDis
 
             View cancelButton = mProgressOverlay.findViewById(R.id.overlayCancel);
             cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
                 public void onClick(View v) {
                     onCancelTasks();
                 }
@@ -505,6 +506,7 @@ public class ShowsActivity extends BaseTopShowsActivity implements OnFirstRunDis
         onShowShowsFragment();
     }
 
+    @Override
     protected void fireTrackerEvent(String label) {
         EasyTracker.getTracker().sendEvent(TAG, "Action Item", label, (long) 0);
     }
