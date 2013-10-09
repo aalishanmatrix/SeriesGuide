@@ -117,6 +117,7 @@ public class ListsActivity extends BaseTopShowsActivity implements OnListsChange
         mTabs.notifyDataSetChanged();
     }
 
+    @Override
     protected void fireTrackerEvent(String label) {
         EasyTracker.getTracker().sendEvent(TAG, "Action Item", label, (long) 0);
     }
