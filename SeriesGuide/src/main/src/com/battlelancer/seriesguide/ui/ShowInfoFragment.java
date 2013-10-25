@@ -5,11 +5,12 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -275,22 +276,23 @@ public class ShowInfoFragment extends SherlockFragment implements LoaderCallback
         });
 
         // Poster
-        final ImageView poster = (ImageView) getView().findViewById(R.id.ImageViewShowInfoPoster);
+        final View posterContainer = getView().findViewById(R.id.containerShowInfoPoster);
+        final ImageView posterView = (ImageView) posterContainer.findViewById(R.id.imageViewShowInfoPoster);
         final String imagePath = mShow.getPoster();
-        ImageProvider.getInstance(getActivity()).loadImage(poster, imagePath, false);
-        poster.setOnClickListener(new View.OnClickListener() {
+        ImageProvider.getInstance(getActivity()).loadImage(posterView, imagePath, false);
+        posterContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle shareArgs = shareBundle();
                 shareArgs.putString(FullscreenImageActivity.PATH, imagePath);
                 Intent fullscreen = new Intent(getActivity(), FullscreenImageActivity.class);
-                fullscreen.putExtras(shareArgs);
-                startActivity(fullscreen);
+                fullscreen.putExtra(FullscreenImageActivity.InitBundle.IMAGE_PATH, imagePath);
+                fullscreen.putExtra(FullscreenImageActivity.InitBundle.IMAGE_TITLE, mShow.getTitle());
+                ActivityCompat.startActivity(getActivity(), fullscreen,
+                        ActivityOptionsCompat
+                                .makeScaleUpAnimation(v, 0, 0, v.getWidth(), v.getHeight()).toBundle());
             }
         });
-        // Utils.setPosterBackground((ImageView)
-        // getView().findViewById(R.id.background),
-        // mShow.getPoster(), getActivity());
 
         // trakt ratings
         onLoadTraktRatings(true);
