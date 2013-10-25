@@ -123,7 +123,8 @@ public class FullscreenImageActivity extends SherlockFragmentActivity {
      */
     @Override
     public void onDetachedFromWindow() {
-        // Release any references to the ImageView
+        // Release any references to avoid memory leaks
+        mHideHandler.removeCallbacks(mHideRunnable);
         mContentView.setImageDrawable(null);
         mContentView = null;
         super.onDetachedFromWindow();
