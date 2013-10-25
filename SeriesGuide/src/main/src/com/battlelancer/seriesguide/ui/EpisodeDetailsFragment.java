@@ -30,8 +30,8 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
-import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.text.style.TextAppearanceSpan;
@@ -73,9 +73,9 @@ import com.uwetrottmann.androidutils.AndroidUtils;
 import com.uwetrottmann.androidutils.CheatSheet;
 import com.uwetrottmann.seriesguide.R;
 
-import java.util.Locale;
-
 import de.greenrobot.event.EventBus;
+
+import java.util.Locale;
 
 /**
  * Displays details about a single episode like summary, ratings and episode
@@ -120,7 +120,7 @@ public class EpisodeDetailsFragment extends SherlockListFragment implements
     }
 
     public static EpisodeDetailsFragment newInstance(int episodeId, boolean isShowingPoster,
-                                                     boolean isShowingShowLink) {
+            boolean isShowingShowLink) {
         EpisodeDetailsFragment f = new EpisodeDetailsFragment();
 
         // Supply index input as an argument.
@@ -250,8 +250,8 @@ public class EpisodeDetailsFragment extends SherlockListFragment implements
 
     protected void onLoadImage(String imagePath, FrameLayout container) {
         if (mArtTask == null || mArtTask.getStatus() == AsyncTask.Status.FINISHED) {
-            mArtTask = (FetchArtTask) new FetchArtTask(imagePath, container, getActivity());
-            AndroidUtils.executeAsyncTask(mArtTask, new Void[]{
+            mArtTask = new FetchArtTask(imagePath, container, getActivity());
+            AndroidUtils.executeAsyncTask(mArtTask, new Void[] {
                     null
             });
         }
@@ -308,7 +308,7 @@ public class EpisodeDetailsFragment extends SherlockListFragment implements
      */
     private class DetailsAdapter extends CursorAdapter {
 
-        private LayoutInflater mLayoutInflater;
+        private final LayoutInflater mLayoutInflater;
 
         public DetailsAdapter(Context context, Cursor c, int flags) {
             super(context, c, flags);
@@ -399,7 +399,7 @@ public class EpisodeDetailsFragment extends SherlockListFragment implements
             }
             airTimeAndNumberText.setSpan(new TextAppearanceSpan(mContext,
                     R.style.TextAppearance_Small_Dim), numberStartIndex,
-                    airTimeAndNumberText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    airTimeAndNumberText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             airtimeText.setText(airTimeAndNumberText);
 
             // Last edit date
@@ -437,15 +437,15 @@ public class EpisodeDetailsFragment extends SherlockListFragment implements
             imageContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Bundle shareBundle = shareBundle(cursor, getSherlockActivity());
-                    shareBundle.putString(FullscreenImageActivity.PATH, imagePath);
                     Intent fullscreen = new Intent(getActivity(), FullscreenImageActivity.class);
                     fullscreen.putExtra(FullscreenImageActivity.InitBundle.IMAGE_PATH, imagePath);
                     fullscreen.putExtra(FullscreenImageActivity.InitBundle.IMAGE_TITLE, showTitle);
-                    fullscreen.putExtra(FullscreenImageActivity.InitBundle.IMAGE_SUBTITLE, episodeTitle);
+                    fullscreen.putExtra(FullscreenImageActivity.InitBundle.IMAGE_SUBTITLE,
+                            episodeTitle);
                     ActivityCompat.startActivity(getActivity(), fullscreen,
                             ActivityOptionsCompat
-                                    .makeScaleUpAnimation(v, 0, 0, v.getWidth(), v.getHeight()).toBundle());
+                                    .makeScaleUpAnimation(v, 0, 0, v.getWidth(), v.getHeight())
+                                    .toBundle());
                 }
             });
 
@@ -453,7 +453,8 @@ public class EpisodeDetailsFragment extends SherlockListFragment implements
             mWatched = cursor.getInt(DetailsQuery.WATCHED) == 1 ? true : false;
             ImageButton seenButton = (ImageButton) view.findViewById(R.id.watchedButton);
             seenButton.setImageResource(mWatched ? R.drawable.ic_ticked
-                    : Utils.resolveAttributeToResourceId(getActivity().getTheme(), R.attr.drawableWatch));
+                    : Utils.resolveAttributeToResourceId(getActivity().getTheme(),
+                            R.attr.drawableWatch));
             seenButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -468,7 +469,8 @@ public class EpisodeDetailsFragment extends SherlockListFragment implements
             mCollected = cursor.getInt(DetailsQuery.COLLECTED) == 1 ? true : false;
             ImageButton collectedButton = (ImageButton) view.findViewById(R.id.collectedButton);
             collectedButton.setImageResource(mCollected ? R.drawable.ic_collected
-                    : Utils.resolveAttributeToResourceId(getActivity().getTheme(), R.attr.drawableCollect));
+                    : Utils.resolveAttributeToResourceId(getActivity().getTheme(),
+                            R.attr.drawableCollect));
             collectedButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -578,7 +580,7 @@ public class EpisodeDetailsFragment extends SherlockListFragment implements
 
     interface DetailsQuery {
 
-        String[] PROJECTION = new String[]{
+        String[] PROJECTION = new String[] {
                 Tables.EPISODES + "." + Episodes._ID, Shows.REF_SHOW_ID, Episodes.OVERVIEW,
                 Episodes.NUMBER, Episodes.SEASON, Episodes.WATCHED, Episodes.FIRSTAIREDMS,
                 Episodes.DIRECTORS, Episodes.GUESTSTARS, Episodes.WRITERS,
@@ -667,7 +669,7 @@ public class EpisodeDetailsFragment extends SherlockListFragment implements
             mTraktTask = new TraktSummaryTask(getSherlockActivity(), ratingBar, isUseCachedValues)
                     .episode(
                             mShowTvdbId, mSeasonNumber, mEpisodeNumber);
-            AndroidUtils.executeAsyncTask(mTraktTask, new Void[]{});
+            AndroidUtils.executeAsyncTask(mTraktTask, new Void[] {});
         }
     }
 }

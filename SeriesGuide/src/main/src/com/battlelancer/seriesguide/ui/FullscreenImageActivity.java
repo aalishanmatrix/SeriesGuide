@@ -25,18 +25,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.Window;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.Window;
 import com.battlelancer.seriesguide.util.ImageProvider;
-import com.battlelancer.seriesguide.util.ShareUtils;
-import com.battlelancer.seriesguide.util.ShareUtils.ShareItems;
-import com.battlelancer.seriesguide.util.ShareUtils.ShareMethod;
 import com.battlelancer.seriesguide.util.SystemUiHider;
-import com.google.analytics.tracking.android.EasyTracker;
 import com.uwetrottmann.seriesguide.R;
 
 import uk.co.senab.photoview.PhotoView;
@@ -48,19 +43,15 @@ import uk.co.senab.photoview.PhotoViewAttacher;
  */
 public class FullscreenImageActivity extends SherlockFragmentActivity {
 
-    /** Log tag */
-    private static final String TAG = "FullscreenImageActivity";
-
     public interface InitBundle {
         String IMAGE_PATH = "fullscreenimageactivity.intent.extra.image";
         String IMAGE_TITLE = "fullscreenimageactivity.intent.extra.title";
         String IMAGE_SUBTITLE = "fullscreenimageactivity.intent.extra.subtitle";
     }
 
-    /** The {@link Handler} used to schedule System UI changes */
-    private final Handler mHideHandler = new Handler();
-
-    /** The instance of the {@link SystemUiHider} for this activity */
+    /**
+     * The instance of the {@link SystemUiHider} for this activity.
+     */
     private SystemUiHider mSystemUiHider;
 
     /**
@@ -68,15 +59,19 @@ public class FullscreenImageActivity extends SherlockFragmentActivity {
      */
     private PhotoView mContentView;
 
-    /** The {@link Bundle} passed into this activity */
-    private Bundle mArgs;
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fullscreen_image_activity);
+
         setupActionBar();
+        setupViews();
+    }
+
     private void setupActionBar() {
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -90,31 +85,24 @@ public class FullscreenImageActivity extends SherlockFragmentActivity {
         } else {
             actionBar.setTitle(title);
             String subtitle = getIntent().getExtras().getString(InitBundle.IMAGE_SUBTITLE);
-            if (subtitle != null) actionBar.setSubtitle(subtitle);
+            if (subtitle != null) {
+                actionBar.setSubtitle(subtitle);
+            }
         }
     }
 
+    private void setupViews() {
         mContentView = (PhotoView) findViewById(R.id.fullscreen_content);
-
-        // Set up the ActionBar
-        final ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
 
         // Load the requested image
         String imagePath = getIntent().getExtras().getString(InitBundle.IMAGE_PATH);
-        String imagePath = mArgs.getString(PATH);
         mContentView.setImageBitmap(ImageProvider.getInstance(this).getImage(imagePath, false));
 
         // Set up an instance of SystemUiHider to control the system UI for
-        // this activity
+        // this activity.
         mSystemUiHider = SystemUiHider.getInstance(this, mContentView,
                 SystemUiHider.FLAG_FULLSCREEN);
         mSystemUiHider.setup();
-                    // Show the ActionBar
-                    actionBar.show();
-                } else {
-                    // Hide the ActionBar
-                    actionBar.hide();
 
         mContentView.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
             @Override
@@ -122,37 +110,22 @@ public class FullscreenImageActivity extends SherlockFragmentActivity {
                 mSystemUiHider.toggle();
             }
         });
-
-        // hide() right away
-        delayedHide(0);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getSupportMenuInflater().inflate(R.menu.fullscreen_image_menu, menu);
-        return super.onCreateOptionsMenu(menu);
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        delayedHide(100);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            finish();
-        } else if (id == R.id.menu_share) {
-            ShareUtils.onShareEpisode(this, mArgs, ShareMethod.OTHER_SERVICES);
-            EasyTracker.getTracker().sendEvent(TAG, "Action Item", "Share", null);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onDetachedFromWindow() {
         // Release any references to the ImageView
         mContentView.setImageDrawable(null);
         mContentView = null;
-        // Release any references to the Handler
-        mHideHandler.removeCallbacksAndMessages(null);
         super.onDetachedFromWindow();
     }
 
@@ -162,22 +135,28 @@ public class FullscreenImageActivity extends SherlockFragmentActivity {
             case android.R.id.home:
                 super.onBackPressed();
                 return true;
+            default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void run() {
-        mSystemUiHider.hide();
-    }
+    private final Handler mHideHandler = new Handler();
+
+    private final Runnable mHideRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mSystemUiHider.hide();
+        }
+    };
 
     /**
      * Schedules a call to hide() in [delay] milliseconds, canceling any
      * previously scheduled calls.
      */
     private void delayedHide(int delayMillis) {
-        mHideHandler.removeCallbacks(this);
-        mHideHandler.postDelayed(this, delayMillis);
+        mHideHandler.removeCallbacks(mHideRunnable);
+        mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
 }

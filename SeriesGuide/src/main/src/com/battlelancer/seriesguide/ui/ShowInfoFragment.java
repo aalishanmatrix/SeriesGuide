@@ -283,14 +283,14 @@ public class ShowInfoFragment extends SherlockFragment implements LoaderCallback
         posterContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle shareArgs = shareBundle();
-                shareArgs.putString(FullscreenImageActivity.PATH, imagePath);
                 Intent fullscreen = new Intent(getActivity(), FullscreenImageActivity.class);
                 fullscreen.putExtra(FullscreenImageActivity.InitBundle.IMAGE_PATH, imagePath);
-                fullscreen.putExtra(FullscreenImageActivity.InitBundle.IMAGE_TITLE, mShow.getTitle());
+                fullscreen.putExtra(FullscreenImageActivity.InitBundle.IMAGE_TITLE,
+                        mShow.getTitle());
                 ActivityCompat.startActivity(getActivity(), fullscreen,
                         ActivityOptionsCompat
-                                .makeScaleUpAnimation(v, 0, 0, v.getWidth(), v.getHeight()).toBundle());
+                                .makeScaleUpAnimation(v, 0, 0, v.getWidth(), v.getHeight())
+                                .toBundle());
             }
         });
 
@@ -319,7 +319,7 @@ public class ShowInfoFragment extends SherlockFragment implements LoaderCallback
                 && (mTraktTask == null || mTraktTask.getStatus() != AsyncTask.Status.RUNNING)) {
             mTraktTask = new TraktSummaryTask(getActivity(), getView().findViewById(
                     R.id.ratingbar), isUseCachedValues).show(getShowTvdbId());
-            AndroidUtils.executeAsyncTask(mTraktTask, new Void[]{});
+            AndroidUtils.executeAsyncTask(mTraktTask, new Void[] {});
         }
     }
 
