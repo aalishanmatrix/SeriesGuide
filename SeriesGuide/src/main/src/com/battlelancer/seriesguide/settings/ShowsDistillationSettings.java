@@ -20,9 +20,7 @@ package com.battlelancer.seriesguide.settings;
 import android.content.Context;
 import android.preference.PreferenceManager;
 
-import com.battlelancer.seriesguide.Constants;
-
-import static com.battlelancer.seriesguide.provider.SeriesContract.Shows;
+import com.battlelancer.seriesguide.provider.SeriesContract.Shows;
 
 /**
  * Provides settings used to filter and sort displayed shows in
@@ -95,8 +93,8 @@ public class ShowsDistillationSettings {
     }
 
     /**
-     * Used by {@link com.battlelancer.seriesguide.ui.ShowsFragment} loader to sort the list of
-     * shows.
+     * Used by {@link com.battlelancer.seriesguide.ui.ShowsFragment} loader to
+     * sort the list of shows.
      */
     public interface ShowsSortOrder {
         // alphabetical by title
