@@ -19,6 +19,7 @@ package com.battlelancer.seriesguide.ui;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -46,6 +47,7 @@ import com.battlelancer.seriesguide.Constants;
 import com.battlelancer.seriesguide.Constants.EpisodeSorting;
 import com.battlelancer.seriesguide.adapters.EpisodesAdapter;
 import com.battlelancer.seriesguide.adapters.EpisodesAdapter.OnFlagEpisodeListener;
+import com.battlelancer.seriesguide.enums.EpisodeFlags;
 import com.battlelancer.seriesguide.provider.SeriesContract.Episodes;
 import com.battlelancer.seriesguide.provider.SeriesContract.ListItemTypes;
 import com.battlelancer.seriesguide.provider.SeriesGuideDatabase.Tables;
@@ -54,6 +56,8 @@ import com.battlelancer.seriesguide.ui.dialogs.SortDialogFragment;
 import com.battlelancer.seriesguide.util.FlagTask;
 import com.battlelancer.seriesguide.util.Utils;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.MapBuilder;
+
 import com.uwetrottmann.androidutils.AndroidUtils;
 import com.uwetrottmann.seriesguide.R;
 
@@ -321,7 +325,8 @@ public class EpisodesFragment extends SherlockListFragment implements
     @Override
     public void onFlagEpisodeWatched(int episodeTvdbId, int episode, boolean isWatched) {
         new FlagTask(getActivity(), getShowId())
-                .episodeWatched(episodeTvdbId, getSeasonNumber(), episode, isWatched)
+                .episodeWatched(episodeTvdbId, getSeasonNumber(), episode,
+                        isWatched ? EpisodeFlags.WATCHED : EpisodeFlags.UNWATCHED)
                 .execute();
     }
 
@@ -333,7 +338,8 @@ public class EpisodesFragment extends SherlockListFragment implements
 
     private void onFlagSeasonWatched(boolean isWatched) {
         new FlagTask(getActivity(), getShowId())
-                .seasonWatched(getSeasonId(), getSeasonNumber(), isWatched)
+                .seasonWatched(getSeasonId(), getSeasonNumber(),
+                        isWatched ? EpisodeFlags.WATCHED : EpisodeFlags.UNWATCHED)
                 .execute();
     }
 
@@ -421,7 +427,10 @@ public class EpisodesFragment extends SherlockListFragment implements
         getLoaderManager().restartLoader(EPISODES_LOADER, null, EpisodesFragment.this);
         getSherlockActivity().invalidateOptionsMenu();
 
-        EasyTracker.getTracker().sendEvent(TAG, "Sorting", mSorting.name(), (long) 0);
+        EasyTracker.getInstance(getActivity()).send(MapBuilder.createEvent(
+                TAG, "Sorting", mSorting.name(), null)
+                .build()
+        );
     }
 
     @TargetApi(8)
@@ -441,11 +450,11 @@ public class EpisodesFragment extends SherlockListFragment implements
         getActivity().openContextMenu(v);
     }
 
-    private static void fireTrackerEvent(String label) {
-        EasyTracker.getTracker().sendEvent(TAG, "Action Item", label, (long) 0);
+    private void fireTrackerEvent(String label) {
+        Utils.trackAction(getActivity(), TAG, label);
     }
 
-    private static void fireTrackerEventContextMenu(String label) {
-        EasyTracker.getTracker().sendEvent(TAG, "Context Item", label, (long) 0);
+    private void fireTrackerEventContextMenu(String label) {
+        Utils.trackContextMenu(getActivity(), TAG, label);
     }
 }

@@ -232,7 +232,7 @@ public class EpisodesActivity extends BaseNavDrawerActivity implements
                 .getDefaultSharedPreferences(this);
         prefs.registerOnSharedPreferenceChangeListener(this);
 
-        EasyTracker.getInstance().activityStart(this);
+        EasyTracker.getInstance(this).activityStart(this);
     }
 
     @Override
@@ -244,7 +244,7 @@ public class EpisodesActivity extends BaseNavDrawerActivity implements
                 .getDefaultSharedPreferences(this);
         prefs.unregisterOnSharedPreferenceChangeListener(this);
 
-        EasyTracker.getInstance().activityStop(this);
+        EasyTracker.getInstance(this).activityStop(this);
     }
 
     List<WeakReference<Fragment>> mFragments = new ArrayList<WeakReference<Fragment>>();

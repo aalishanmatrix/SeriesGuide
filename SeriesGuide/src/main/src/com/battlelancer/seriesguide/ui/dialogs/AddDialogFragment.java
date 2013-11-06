@@ -36,6 +36,9 @@ import com.battlelancer.seriesguide.items.SearchResult;
 import com.battlelancer.seriesguide.ui.SeriesGuidePreferences;
 import com.battlelancer.seriesguide.util.ImageDownloader;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.Fields;
+import com.google.analytics.tracking.android.MapBuilder;
+
 import com.uwetrottmann.seriesguide.R;
 
 /**
@@ -64,7 +67,7 @@ public class AddDialogFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
 
         // hide title, use custom theme
-        if (SeriesGuidePreferences.THEME == R.style.ICSBaseTheme) {
+        if (SeriesGuidePreferences.THEME == R.style.AndroidTheme) {
             setStyle(STYLE_NO_TITLE, 0);
         } else {
             setStyle(STYLE_NO_TITLE, R.style.SeriesGuideTheme_Dialog);
@@ -84,7 +87,10 @@ public class AddDialogFragment extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        EasyTracker.getTracker().sendView("Add Dialog");
+        EasyTracker tracker = EasyTracker.getInstance(getActivity());
+        tracker.set(Fields.SCREEN_NAME, "Add Dialog");
+        tracker.send(MapBuilder.createAppView().build());
+        tracker.set(Fields.SCREEN_NAME, null);
     }
 
     @Override

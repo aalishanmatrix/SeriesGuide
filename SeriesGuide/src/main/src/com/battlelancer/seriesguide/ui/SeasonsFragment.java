@@ -50,6 +50,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.battlelancer.seriesguide.Constants;
 import com.battlelancer.seriesguide.Constants.SeasonSorting;
 import com.battlelancer.seriesguide.adapters.SeasonsAdapter;
+import com.battlelancer.seriesguide.enums.EpisodeFlags;
 import com.battlelancer.seriesguide.provider.SeriesContract.ListItemTypes;
 import com.battlelancer.seriesguide.provider.SeriesContract.Seasons;
 import com.battlelancer.seriesguide.ui.dialogs.ListsDialogFragment;
@@ -60,6 +61,8 @@ import com.battlelancer.seriesguide.util.FlagTask.FlagTaskCompletedEvent;
 import com.battlelancer.seriesguide.util.FlagTask.SeasonWatchedType;
 import com.battlelancer.seriesguide.util.Utils;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.MapBuilder;
+
 import com.uwetrottmann.androidutils.AndroidUtils;
 import com.uwetrottmann.androidutils.CheatSheet;
 import com.uwetrottmann.seriesguide.R;
@@ -81,6 +84,8 @@ public class SeasonsFragment extends SherlockListFragment implements
     private static final int CONTEXT_FLAG_ALL_UNCOLLECTED_ID = 3;
 
     private static final int CONTEXT_MANAGE_LISTS_ID = 4;
+
+    private static  final int CONTEXT_FLAG_ALL_SKIPPED_ID = 5;
 
     private static final int LOADER_ID = 1;
 
@@ -227,9 +232,10 @@ public class SeasonsFragment extends SherlockListFragment implements
         super.onCreateContextMenu(menu, v, menuInfo);
         menu.add(0, CONTEXT_FLAG_ALL_WATCHED_ID, 0, R.string.mark_all);
         menu.add(0, CONTEXT_FLAG_ALL_UNWATCHED_ID, 1, R.string.unmark_all);
-        menu.add(0, CONTEXT_FLAG_ALL_COLLECTED_ID, 2, R.string.collect_all);
-        menu.add(0, CONTEXT_FLAG_ALL_UNCOLLECTED_ID, 3, R.string.uncollect_all);
-        menu.add(0, CONTEXT_MANAGE_LISTS_ID, 4, R.string.list_item_manage);
+        menu.add(0, CONTEXT_FLAG_ALL_SKIPPED_ID, 2, R.string.action_skip);
+        menu.add(0, CONTEXT_FLAG_ALL_COLLECTED_ID, 3, R.string.collect_all);
+        menu.add(0, CONTEXT_FLAG_ALL_UNCOLLECTED_ID, 4, R.string.uncollect_all);
+        menu.add(0, CONTEXT_MANAGE_LISTS_ID, 5, R.string.list_item_manage);
     }
 
     @Override
@@ -256,6 +262,11 @@ public class SeasonsFragment extends SherlockListFragment implements
             case CONTEXT_FLAG_ALL_UNCOLLECTED_ID: {
                 onFlagSeasonCollected(info.id, season.getInt(SeasonsQuery.COMBINED), false);
                 fireTrackerEventContextMenu("Flag all uncollected");
+                return true;
+            }
+            case CONTEXT_FLAG_ALL_SKIPPED_ID: {
+                onFlagSeasonSkipped(info.id, season.getInt(SeasonsQuery.COMBINED));
+                fireTrackerEventContextMenu("Flag all skipped");
                 return true;
             }
             case CONTEXT_MANAGE_LISTS_ID: {
@@ -325,13 +336,20 @@ public class SeasonsFragment extends SherlockListFragment implements
         return getArguments().getInt(InitBundle.SHOW_TVDBID);
     }
 
+    private void onFlagSeasonSkipped(long seasonId, int seasonNumber) {
+        new FlagTask(getActivity(), getShowId())
+                .seasonWatched((int) seasonId, seasonNumber, EpisodeFlags.SKIPPED)
+                .execute();
+    }
+
     /**
      * Changes the seasons episodes watched flags, updates the status label of
      * the season.
      */
     private void onFlagSeasonWatched(long seasonId, int seasonNumber, boolean isWatched) {
         new FlagTask(getActivity(), getShowId())
-                .seasonWatched((int) seasonId, seasonNumber, isWatched)
+                .seasonWatched((int) seasonId, seasonNumber,
+                        isWatched ? EpisodeFlags.WATCHED : EpisodeFlags.UNWATCHED)
                 .execute();
     }
 
@@ -544,7 +562,9 @@ public class SeasonsFragment extends SherlockListFragment implements
         mSorting = SeasonSorting.fromValue(prefs.getString(
                 SeriesGuidePreferences.KEY_SEASON_SORT_ORDER, SeasonSorting.LATEST_FIRST.value()));
 
-        EasyTracker.getTracker().sendEvent(TAG, "Sorting", mSorting.name(), (long) 0);
+        EasyTracker.getInstance(getActivity()).send(MapBuilder.createEvent(
+                TAG, "Sorting", mSorting.name(), null).build()
+        );
 
         // restart loader and update menu description
         getLoaderManager().restartLoader(LOADER_ID, null, SeasonsFragment.this);
@@ -575,11 +595,15 @@ public class SeasonsFragment extends SherlockListFragment implements
         getActivity().openContextMenu(v);
     }
 
-    private static void fireTrackerEvent(String label) {
-        EasyTracker.getTracker().sendEvent(TAG, "Action Item", label, (long) 0);
+    private void fireTrackerEvent(String label) {
+        EasyTracker.getInstance(getActivity()).send(
+                MapBuilder.createEvent(TAG, "Action Item", label, null).build()
+        );
     }
 
-    private static void fireTrackerEventContextMenu(String label) {
-        EasyTracker.getTracker().sendEvent(TAG, "Context Item", label, (long) 0);
+    private void fireTrackerEventContextMenu(String label) {
+        EasyTracker.getInstance(getActivity()).send(
+                MapBuilder.createEvent(TAG, "Context Item", label, null).build()
+        );
     }
 }

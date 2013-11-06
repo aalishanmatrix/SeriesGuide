@@ -32,6 +32,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -47,6 +48,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.battlelancer.seriesguide.enums.EpisodeFlags;
 import com.battlelancer.seriesguide.enums.TraktAction;
 import com.battlelancer.seriesguide.provider.SeriesContract.Episodes;
 import com.battlelancer.seriesguide.provider.SeriesContract.ListItemTypes;
@@ -67,6 +69,8 @@ import com.battlelancer.seriesguide.util.TraktTask;
 import com.battlelancer.seriesguide.util.TraktTask.TraktActionCompleteEvent;
 import com.battlelancer.seriesguide.util.Utils;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.MapBuilder;
+
 import com.uwetrottmann.androidutils.AndroidUtils;
 import com.uwetrottmann.androidutils.CheatSheet;
 import com.uwetrottmann.seriesguide.R;
@@ -84,6 +88,8 @@ public class OverviewFragment extends SherlockFragment implements
     private static final int EPISODE_LOADER_ID = 100;
 
     private static final int SHOW_LOADER_ID = 101;
+
+    private static final int CONTEXT_CREATE_CALENDAR_EVENT_ID = 201;
 
     private boolean mMultiPane;
 
@@ -187,6 +193,26 @@ public class OverviewFragment extends SherlockFragment implements
     }
 
     @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+            ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        menu.add(0, CONTEXT_CREATE_CALENDAR_EVENT_ID, 0, R.string.addtocalendar);
+    }
+
+    @Override
+    public boolean onContextItemSelected(android.view.MenuItem item) {
+        switch (item.getItemId()) {
+            case CONTEXT_CREATE_CALENDAR_EVENT_ID: {
+                onAddCalendarEvent();
+                return true;
+            }
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.overview_fragment_menu, menu);
@@ -267,14 +293,23 @@ public class OverviewFragment extends SherlockFragment implements
         }
     }
 
-    private void onFlagWatched() {
+    private void onEpisodeSkipped() {
+        onChangeEpisodeFlag(EpisodeFlags.SKIPPED);
+        fireTrackerEvent("Flag Skipped");
+    }
+
+    private void onEpisodeWatched() {
+        onChangeEpisodeFlag(EpisodeFlags.WATCHED);
         fireTrackerEvent("Flag Watched");
+    }
+
+    private void onChangeEpisodeFlag(int episodeFlag) {
         if (mEpisodeCursor != null && mEpisodeCursor.moveToFirst()) {
             final int season = mEpisodeCursor.getInt(EpisodeQuery.SEASON);
             final int episode = mEpisodeCursor.getInt(EpisodeQuery.NUMBER);
             new FlagTask(getActivity(), getShowId())
                     .episodeWatched(mEpisodeCursor.getInt(EpisodeQuery._ID), season,
-                            episode, true)
+                            episode, episodeFlag)
                     .execute();
         }
     }
@@ -326,8 +361,7 @@ public class OverviewFragment extends SherlockFragment implements
         if (mEpisodeCursor != null && mEpisodeCursor.moveToFirst()) {
             final int season = mEpisodeCursor.getInt(EpisodeQuery.SEASON);
             final int episode = mEpisodeCursor.getInt(EpisodeQuery.NUMBER);
-            final boolean isCollected = mEpisodeCursor.getInt(EpisodeQuery.COLLECTED) == 1 ? true
-                    : false;
+            final boolean isCollected = mEpisodeCursor.getInt(EpisodeQuery.COLLECTED) == 1;
             new FlagTask(getActivity(), getShowId())
                     .episodeCollected(mEpisodeCursor.getInt(EpisodeQuery._ID), season, episode,
                             !isCollected)
@@ -360,18 +394,18 @@ public class OverviewFragment extends SherlockFragment implements
 
     public static class EpisodeLoader extends CursorLoader {
 
-        private String mShowId;
+        private int mShowTvdbId;
 
-        public EpisodeLoader(Context context, String showId) {
+        public EpisodeLoader(Context context, int showTvdbId) {
             super(context);
-            mShowId = showId;
+            mShowTvdbId = showTvdbId;
             setProjection(EpisodeQuery.PROJECTION);
         }
 
         @Override
         public Cursor loadInBackground() {
             // get episode id, set query params
-            int episodeId = (int) DBUtils.updateLatestEpisode(getContext(), mShowId);
+            int episodeId = (int) DBUtils.updateLatestEpisode(getContext(), mShowTvdbId);
             setUri(Episodes.buildEpisodeWithShowUri(String.valueOf(episodeId)));
 
             return super.loadInBackground();
@@ -447,7 +481,7 @@ public class OverviewFragment extends SherlockFragment implements
         switch (id) {
             case EPISODE_LOADER_ID:
             default:
-                return new EpisodeLoader(getActivity(), String.valueOf(getShowId()));
+                return new EpisodeLoader(getActivity(), getShowId());
             case SHOW_LOADER_ID:
                 return new CursorLoader(getActivity(), Shows.buildShowUri(String
                         .valueOf(getShowId())), ShowQuery.PROJECTION, null, null, null);
@@ -488,8 +522,10 @@ public class OverviewFragment extends SherlockFragment implements
         }
     }
 
-    private static void fireTrackerEvent(String label) {
-        EasyTracker.getTracker().sendEvent(TAG, "Action Item", label, (long) 0);
+    private void fireTrackerEvent(String label) {
+        EasyTracker.getInstance(getActivity()).send(
+                MapBuilder.createEvent(TAG, "Action Item", label, null).build()
+        );
     }
 
     @SuppressLint("NewApi")
@@ -556,19 +592,21 @@ public class OverviewFragment extends SherlockFragment implements
 
             // Button bar
             // check-in button
-            buttons.findViewById(R.id.checkinButton).setOnClickListener(new OnClickListener() {
+            View checkinButton = buttons.findViewById(R.id.imageButtonBarCheckin);
+            checkinButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     onCheckIn();
                 }
             });
+            CheatSheet.setup(checkinButton);
 
             // watched button
-            View watchedButton = buttons.findViewById(R.id.watchedButton);
+            View watchedButton = buttons.findViewById(R.id.imageButtonBarWatched);
             watchedButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onFlagWatched();
+                    onEpisodeWatched();
                 }
             });
             CheatSheet.setup(watchedButton, R.string.mark_episode);
@@ -576,7 +614,7 @@ public class OverviewFragment extends SherlockFragment implements
             // collected button
             boolean isCollected = episode.getInt(EpisodeQuery.COLLECTED) == 1;
             ImageButton collectedButton = (ImageButton) buttons
-                    .findViewById(R.id.collectedButton);
+                    .findViewById(R.id.imageButtonBarCollected);
             collectedButton.setImageResource(isCollected ? R.drawable.ic_collected
                     : Utils.resolveAttributeToResourceId(getActivity().getTheme(), R.attr.drawableCollect));
             collectedButton.setOnClickListener(new OnClickListener() {
@@ -588,15 +626,25 @@ public class OverviewFragment extends SherlockFragment implements
             CheatSheet.setup(collectedButton, isCollected ? R.string.uncollect
                     : R.string.collect);
 
-            // calendar button
-            View calendarButton = buttons.findViewById(R.id.calendarButton);
-            calendarButton.setOnClickListener(new OnClickListener() {
+            // skip button
+            View skipButton = buttons.findViewById(R.id.imageButtonBarSkip);
+            skipButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onAddCalendarEvent();
+                    onEpisodeSkipped();
                 }
             });
-            CheatSheet.setup(calendarButton);
+            CheatSheet.setup(skipButton);
+
+            // button bar menu
+            View menuButton = buttons.findViewById(R.id.imageButtonBarMenu);
+            registerForContextMenu(menuButton);
+            menuButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getActivity().openContextMenu(v);
+                }
+            });
 
             ratings.setOnClickListener(new OnClickListener() {
                 @Override

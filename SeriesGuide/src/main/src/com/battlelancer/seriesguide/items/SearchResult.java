@@ -24,7 +24,7 @@ import android.os.Parcelable;
  */
 public class SearchResult implements Parcelable {
 
-    public String tvdbid;
+    public int tvdbid;
 
     public String title;
 
@@ -50,7 +50,7 @@ public class SearchResult implements Parcelable {
     }
 
     public SearchResult(Parcel in) {
-        tvdbid = in.readString();
+        tvdbid = in.readInt();
         title = in.readString();
         overview = in.readString();
         poster = in.readString();
@@ -74,7 +74,7 @@ public class SearchResult implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(tvdbid);
+        dest.writeInt(tvdbid);
         dest.writeString(title);
         dest.writeString(overview);
         dest.writeString(poster);

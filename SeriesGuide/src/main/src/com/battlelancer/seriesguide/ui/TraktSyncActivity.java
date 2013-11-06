@@ -37,6 +37,8 @@ import com.actionbarsherlock.view.MenuItem;
 import com.battlelancer.seriesguide.provider.SeriesContract.Shows;
 import com.battlelancer.seriesguide.util.TraktSync;
 import com.google.analytics.tracking.android.EasyTracker;
+
+import com.battlelancer.seriesguide.util.Utils;
 import com.uwetrottmann.seriesguide.R;
 
 /**
@@ -104,7 +106,7 @@ public class TraktSyncActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        EasyTracker.getInstance().activityStart(this);
+        EasyTracker.getInstance(this).activityStart(this);
     }
 
     @Override
@@ -127,7 +129,7 @@ public class TraktSyncActivity extends BaseActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        EasyTracker.getInstance().activityStop(this);
+        EasyTracker.getInstance(this).activityStop(this);
     }
 
     @Override
@@ -185,6 +187,7 @@ public class TraktSyncActivity extends BaseActivity {
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                Utils.trackAction(TraktSyncActivity.this, TAG, "Upload to trakt");
                                 fireTrackerEvent("Upload to trakt");
                                 if (mSyncTask == null
                                         || (mSyncTask != null && mSyncTask.getStatus() == AsyncTask.Status.FINISHED)) {
@@ -201,7 +204,7 @@ public class TraktSyncActivity extends BaseActivity {
         return null;
     }
 
-    private static void fireTrackerEvent(String label) {
-        EasyTracker.getTracker().sendEvent(TAG, "Click", label, (long) 0);
+    private void fireTrackerEvent(String label) {
+        Utils.trackClick(this, TAG, label);
     }
 }

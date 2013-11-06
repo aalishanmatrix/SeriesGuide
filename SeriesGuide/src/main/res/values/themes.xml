@@ -56,6 +56,8 @@
         <item name="drawableWatch">@drawable/ic_action_tick</item>
         <item name="drawableCollect">@drawable/ic_action_collect</item>
         <item name="drawableFilter">@drawable/ic_action_filter</item>
+        <item name="drawableSkip">@drawable/ic_action_playback_next</item>
+        <item name="drawableWatchSkipped">@drawable/ic_action_watch_skipped</item>
     </style>
 
     <style name="SeriesGuideBaseTheme" parent="Theme.Sherlock">
@@ -91,13 +93,15 @@
         <item name="android:windowAnimationStyle">@style/Animation.CheckinDialog</item>
     </style>
 
-    <!-- A dark Android theme -->
-    <style name="ICSBaseTheme" parent="Theme.Sherlock">
+    <!-- Dark Android theme -->
+    <style name="AndroidTheme" parent="AndroidBaseTheme">
+
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+
         <item name="custom_list_selector">@drawable/list_selector_holo_dark</item>
 
-        <!-- System widgets -->
-        <item name="android:buttonStyle">@style/Widget.Android.Button</item>
-        <item name="android:imageButtonStyle">@style/Widget.Android.ImageButton</item>
+        <!-- Action bar (ABS) -->
+        <item name="actionBarStyle">@style/ActionBarDark</item>
 
         <!-- Colors -->
         <item name="textColorSgDefault">@color/text_default</item>
@@ -126,6 +130,17 @@
         <item name="drawableWatch">@drawable/ic_action_tick</item>
         <item name="drawableCollect">@drawable/ic_action_collect</item>
         <item name="drawableFilter">@drawable/ic_action_filter</item>
+        <item name="drawableSkip">@drawable/ic_action_playback_next</item>
+        <item name="drawableWatchSkipped">@drawable/ic_action_watch_skipped</item>
+
+    </style>
+
+    <style name="AndroidBaseTheme" parent="Theme.Sherlock">
+
+        <!-- System widgets (native) -->
+        <item name="android:buttonStyle">@style/Widget.Android.Button</item>
+        <item name="android:imageButtonStyle">@style/Widget.Android.ImageButton</item>
+
     </style>
 
     <!-- SeriesGuide Light theme -->
@@ -181,6 +196,8 @@
         <item name="drawableWatch">@drawable/ic_action_tick_inverse</item>
         <item name="drawableCollect">@drawable/ic_action_collect_inverse</item>
         <item name="drawableFilter">@drawable/ic_action_filter_inverse</item>
+        <item name="drawableSkip">@drawable/ic_action_playback_next_inverse</item>
+        <item name="drawableWatchSkipped">@drawable/ic_action_watch_skipped_inverse</item>
 
         <!-- Necessary to inherit the primary accent color in the DarkActionBar (ABS) -->
         <item name="actionBarWidgetTheme">@style/SeriesGuideTheme</item>

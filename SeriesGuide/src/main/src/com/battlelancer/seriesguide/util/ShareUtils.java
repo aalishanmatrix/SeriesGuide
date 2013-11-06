@@ -39,6 +39,8 @@ import android.widget.Toast;
 import com.battlelancer.seriesguide.provider.SeriesContract.Episodes;
 import com.battlelancer.seriesguide.ui.dialogs.TraktRateDialogFragment;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.MapBuilder;
+
 import com.uwetrottmann.seriesguide.R;
 
 import java.io.File;
@@ -59,21 +61,11 @@ public class ShareUtils {
     public static final String KEY_GETGLUE_IMDBID = "com.battlelancer.seriesguide.getglue.imdbid";
 
     public enum ShareMethod {
-        RATE_TRAKT(0, R.string.menu_rate_episode, R.drawable.trakt_love_large),
 
-        OTHER_SERVICES(1, R.string.menu_share_others, R.drawable.ic_action_share);
+        RATE_TRAKT,
 
-        ShareMethod(int index, int titleRes, int drawableRes) {
-            this.index = index;
-            this.titleRes = titleRes;
-            this.drawableRes = drawableRes;
-        }
+        OTHER_SERVICES
 
-        public int index;
-
-        public int titleRes;
-
-        public int drawableRes;
     }
 
     public interface ShareItems {
@@ -181,9 +173,11 @@ public class ShareUtils {
         intent.putExtra("endTime", endTime);
 
         if (!Utils.tryStartActivity(context, intent, false)) {
-            EasyTracker.getTracker().sendEvent(TAG, "Calendar", "Failed", (long) 0);
             Toast.makeText(context, context.getString(R.string.addtocalendar_failed),
                     Toast.LENGTH_SHORT).show();
+            EasyTracker.getInstance(context).send(
+                    MapBuilder.createEvent(TAG, "Calendar", "Failed", null).build()
+            );
         }
     }
 
